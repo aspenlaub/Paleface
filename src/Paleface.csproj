@@ -14,9 +14,15 @@
     <NuspecFile>Paleface.nuspec</NuspecFile>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="SampleWindow\**" />
     <Compile Remove="Test\**" />
+    <EmbeddedResource Remove="SampleWindow\**" />
     <EmbeddedResource Remove="Test\**" />
+    <None Remove="SampleWindow\**" />
     <None Remove="Test\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Appium.WebDriver" Version="4.0.0" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">
