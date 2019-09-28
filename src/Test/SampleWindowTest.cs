@@ -11,7 +11,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Test {
 
         [TestMethod]
         public void CanUseTextBox() {
-            using var sut = new WindowUnderTest(SampleWindowExecutable, SampleWindowTitle, () => {});
+            using var sut = new Window(SampleWindowExecutable, SampleWindowTitle, () => {});
 
             var textBox = sut.FindTextBox("SampleTextBox");
             Assert.IsNotNull(textBox);

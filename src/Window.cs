@@ -7,12 +7,12 @@ using OpenQA.Selenium.Appium;
 using OpenQA.Selenium.Appium.Windows;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Paleface {
-    public class WindowUnderTest : IDisposable {
+    public class Window : IDisposable {
         public WindowsDriver<WindowsElement> Session { get; private set; }
 
         protected Action DismissPromptsOnClosing;
 
-        public WindowUnderTest(string executable, string expectedTitle, Action dismissPromptsOnClosing) {
+        public Window(string executable, string expectedTitle, Action dismissPromptsOnClosing) {
             var options = new AppiumOptions();
             if (!File.Exists(executable)) {
                 throw new FileNotFoundException($"File does not exist: {executable}");
