@@ -64,7 +64,10 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface {
 
             var process = new Process {
                 StartInfo = new ProcessStartInfo {
-                    FileName = winAppDriverExecutable
+                    FileName = winAppDriverExecutable,
+                    WindowStyle = ProcessWindowStyle.Normal,
+                    UseShellExecute = true,
+                    WorkingDirectory = Path.GetDirectoryName(winAppDriverExecutable) ?? ""
                 }
             };
             process.Start();
