@@ -6,10 +6,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Test {
     public class SampleWindowTest {
         protected static readonly string SampleWindowExecutable = typeof(SampleWindowTest).Assembly.Location
             .Replace(@"\Test\", @"\SampleWindow\")
-            .Replace("Aspenlaub.Net.GitHub.CSharp.Paleface.Test.dll",
-                typeof(SampleWindowTest).Assembly.Location.Contains("Debug")
-                    ? @"netcoreapp3.0\Aspenlaub.Net.GitHub.CSharp.Paleface.SampleWindow.exe"
-                    : @"Aspenlaub.Net.GitHub.CSharp.Paleface.SampleWindow.exe");
+            .Replace("Aspenlaub.Net.GitHub.CSharp.Paleface.Test.dll", @"Aspenlaub.Net.GitHub.CSharp.Paleface.SampleWindow.exe");
         protected static readonly string SampleWindowTitle = SampleWindowResources.WindowTitle;
 
         [TestMethod]
