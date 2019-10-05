@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System.IO;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SampleWindowResources = Aspenlaub.Net.GitHub.CSharp.Paleface.SampleWindow.Properties.Resources;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Test {
@@ -17,9 +18,12 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Test {
             Assert.IsNotNull(textBox);
             textBox.Clear();
             Assert.AreEqual(string.Empty, textBox.Text);
-            const string text = "Works with a simple text, the words 'yes' and 'zero'";
+            const string text = @"Works with a simple text, the words 'yes' and 'zero'";
             textBox.Text = text;
             Assert.AreEqual(text, textBox.Text);
+            var fileName = Path.GetTempPath() + @"\TextFile.txt";
+            textBox.Text = fileName;
+            Assert.AreEqual(fileName, textBox.Text);
         }
     }
 }

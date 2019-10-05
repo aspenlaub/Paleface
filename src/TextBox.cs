@@ -7,7 +7,11 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface {
 
         public string Text {
             get => EditBox.Text;
-            set => EditBox.SendKeys(StringPreparator.PrepareStringForInput(value));
+            set {
+                Clear();
+                EditBox.SendKeys(StringPreparator.PrepareStringForInput(value));
+
+            }
         }
 
         public TextBox(AppiumWebElement editBox) {
