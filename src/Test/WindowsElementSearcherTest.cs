@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading;
+﻿using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Test {
@@ -10,13 +6,13 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Test {
     public class WindowsElementSearcherTest {
         [TestInitialize]
         public void Initialize() {
-            ShutDownRunningCalculators();
-            LaunchCalculator();
+            TestProcessHelper.ShutDownRunningProcesses(TestProcessHelper.ProcessType.Calculator);
+            TestProcessHelper.LaunchProcess(TestProcessHelper.ProcessType.Calculator);
         }
 
         [TestCleanup]
         public void Cleanup() {
-            ShutDownRunningCalculators();
+            TestProcessHelper.ShutDownRunningProcesses(TestProcessHelper.ProcessType.Calculator);
         }
 
         [TestMethod]
@@ -33,47 +29,13 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Test {
             Assert.AreEqual(4, log.Count);
             element = sut.SearchWindowsElement(windowsElementSearchSpec, log);
             Assert.IsNotNull(element);
-            ShutDownRunningCalculators();
+            TestProcessHelper.ShutDownRunningProcesses(TestProcessHelper.ProcessType.Calculator);
             log = new List<string>();
             element = sut.SearchWindowsElement(windowsElementSearchSpec, log);
             Assert.IsNull(element);
             Assert.AreEqual(0, log.Count);
             element = sut.SearchWindowsElement(windowsElementSearchSpec);
             Assert.IsNull(element);
-        }
-
-        private static void ShutDownRunningCalculators() {
-            var processes = Process.GetProcessesByName("calculator").ToList();
-            if (!processes.Any()) {
-                return;
-            }
-
-            foreach (var process in processes) {
-                process.Kill();
-                Thread.Sleep(TimeSpan.FromSeconds(1));
-            }
-            processes = Process.GetProcessesByName("calculator").ToList();
-            if (!processes.Any()) {
-                return;
-            }
-
-            throw new Exception("Could not close all file calculators");
-        }
-
-        private static void LaunchCalculator() {
-            var process = new Process {
-                StartInfo = new ProcessStartInfo {
-                    FileName = "calc.exe",
-                    WindowStyle = ProcessWindowStyle.Normal,
-                    UseShellExecute = true,
-                    WorkingDirectory = Environment.SystemDirectory
-                }
-            };
-            process.Start();
-            Thread.Sleep(TimeSpan.FromSeconds(5));
-            if (Process.GetProcessesByName("calculator").Length != 1) {
-                throw new Exception("File calculator process could not be started");
-            }
         }
     }
 }
