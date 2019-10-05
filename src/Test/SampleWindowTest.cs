@@ -30,7 +30,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Test {
         public void CanUseComboBox() {
             using var sut = new WindowsElement(SampleWindowExecutable, SampleWindowTitle, () => { });
 
-            var comboBox = sut.FindComboBox("SampleComboBox");
+            var comboBox = sut.FindTextBox("SampleComboBox");
             Assert.IsNotNull(comboBox);
             comboBox.Clear();
             Assert.AreEqual(string.Empty, comboBox.Text);

@@ -26,15 +26,17 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface {
             }
 
             log.Clear();
-            var result = desktopSession.FindElementsByName(windowsElementSearchSpec.Name).FirstOrDefault(e => DoesElementMatchSearchSpec(e, windowsElementSearchSpec, 0, log));
+            var xpath = windowsElementSearchSpec.XPath();
+            var result = desktopSession.FindElementsByXPath(xpath).FirstOrDefault(e => DoesElementMatchSearchSpec(e, windowsElementSearchSpec, 0, log));
             return result;
         }
 
         private static bool DoesElementMatchSearchSpec(AppiumWebElement element, WindowsElementSearchSpec windowsElementSearchSpec, int depth, ICollection<string> log) {
-            if (!element.TagName.ToLower().Contains(windowsElementSearchSpec.LocalizedControlType.ToLower())) { return false; }
+            if (element.GetAttribute("LocalizedControlType") != windowsElementSearchSpec.LocalizedControlType) { return false; }
+            if (!string.IsNullOrWhiteSpace(windowsElementSearchSpec.Name) && element.GetAttribute("Name") != windowsElementSearchSpec.Name) { return false; }
 
             if (!windowsElementSearchSpec.WindowsChildElementSearchSpecs.All(
-                    spec => element.FindElementsByName(spec.Name).Any(e => DoesElementMatchSearchSpec(e, spec, depth + 1, log))
+                    spec => element.FindElementsByXPath(spec.XPath()).Any(e => DoesElementMatchSearchSpec(e, spec, depth + 1, log))
                 )) {
                     return false;
             }

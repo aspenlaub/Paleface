@@ -16,5 +16,18 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface {
                 LocalizedControlType = localizedControlType, Name = name
             };
         }
+
+        public override string ToString() {
+            return $"{Name} of type {LocalizedControlType}";
+        }
+
+        public string XPath() {
+            var xpath = "//*[@LocalizedControlType='" + LocalizedControlType + "']";
+            if (!string.IsNullOrWhiteSpace(Name)) {
+                xpath = xpath + "[@Name='" + Name + "']";
+            }
+
+            return xpath;
+        }
     }
 }

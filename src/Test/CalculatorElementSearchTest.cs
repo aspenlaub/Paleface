@@ -3,7 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Test {
     [TestClass]
-    public class WindowsElementSearcherTest {
+    public class CalculatorElementSearchTest {
         [TestInitialize]
         public void Initialize() {
             TestProcessHelper.ShutDownRunningProcesses(TestProcessHelper.ProcessType.Calculator);
