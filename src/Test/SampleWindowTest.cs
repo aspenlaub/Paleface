@@ -25,5 +25,21 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Test {
             textBox.Text = fileName;
             Assert.AreEqual(fileName, textBox.Text);
         }
+
+        [TestMethod]
+        public void CanUseComboBox() {
+            using var sut = new WindowsElement(SampleWindowExecutable, SampleWindowTitle, () => { });
+
+            var comboBox = sut.FindComboBox("SampleComboBox");
+            Assert.IsNotNull(comboBox);
+            comboBox.Clear();
+            Assert.AreEqual(string.Empty, comboBox.Text);
+            const string text = @"Works with a simple text, the words 'yes' and 'zero'";
+            comboBox.Text = text;
+            Assert.AreEqual(text, comboBox.Text);
+            var fileName = Path.GetTempPath() + @"\TextFile.txt";
+            comboBox.Text = fileName;
+            Assert.AreEqual(fileName, comboBox.Text);
+        }
     }
 }

@@ -8,6 +8,7 @@
     <Grid Margin="3">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="100" />
@@ -15,5 +16,7 @@
         </Grid.ColumnDefinitions>
         <Label Grid.Row="0" Grid.Column="0" Margin="3">SampleTextBox</Label>
         <TextBox Grid.Row="0" Grid.Column="1" Margin="3" Name="SampleTextBox" AutomationProperties.Name="SampleTextBox" />
+        <Label Grid.Row="1" Grid.Column="0" Margin="3">SampleComboBox</Label>
+        <ComboBox Grid.Row="1" Grid.Column="1" Margin="3" Name="SampleComboBox" AutomationProperties.Name="SampleComboBox" IsEditable="True" />
     </Grid>
 </Window>
