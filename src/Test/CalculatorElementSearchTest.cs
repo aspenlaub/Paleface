@@ -7,16 +7,18 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Test {
         [TestInitialize]
         public void Initialize() {
             TestProcessHelper.ShutDownRunningProcesses(TestProcessHelper.ProcessType.Calculator);
-            TestProcessHelper.LaunchProcess(TestProcessHelper.ProcessType.Calculator);
+            TestProcessHelper.ShutDownRunningProcesses(TestProcessHelper.ProcessType.Opera);
         }
 
         [TestCleanup]
         public void Cleanup() {
             TestProcessHelper.ShutDownRunningProcesses(TestProcessHelper.ProcessType.Calculator);
+            TestProcessHelper.ShutDownRunningProcesses(TestProcessHelper.ProcessType.Opera);
         }
 
         [TestMethod]
         public void CanFindCalculator() {
+            TestProcessHelper.LaunchProcess(TestProcessHelper.ProcessType.Calculator);
             var windowsElementSearchSpec = WindowsElementSearchSpec.Create("window", "Calculator");
             var windowsChildElementSearchSpec = WindowsElementSearchSpec.Create("group", "Standard functions");
             windowsElementSearchSpec.WindowsChildElementSearchSpecs.Add(windowsChildElementSearchSpec);
@@ -40,6 +42,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Test {
 
         [TestMethod]
         public void CanUseOptionalSearchCriteria() {
+            TestProcessHelper.LaunchProcess(TestProcessHelper.ProcessType.Calculator);
             var windowsElementSearchSpec = WindowsElementSearchSpec.Create("pane", "");
             windowsElementSearchSpec.NameMustNotBeEmpty = true;
             var sut = new WindowsElementSearcher();
@@ -49,19 +52,60 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Test {
             var elementName = element.GetName();
             Assert.IsFalse(string.IsNullOrWhiteSpace(elementName));
             Assert.IsTrue(elementName.Contains("Desktop"));
+        }
+
+        [TestMethod]
+        public void CanUseNameDoesNotContainCriteria() {
+            TestProcessHelper.LaunchProcess(TestProcessHelper.ProcessType.Calculator);
+            var windowsElementSearchSpec = WindowsElementSearchSpec.Create("pane", "");
+            windowsElementSearchSpec.NameMustNotBeEmpty = true;
             windowsElementSearchSpec.NameDoesNotContain = "Desktop";
-            element = sut.SearchWindowsElement(windowsElementSearchSpec, log);
+            var sut = new WindowsElementSearcher();
+            var log = new List<string>();
+            var element = sut.SearchWindowsElement(windowsElementSearchSpec, log);
             Assert.IsNotNull(element);
             Assert.IsFalse(string.IsNullOrWhiteSpace(element.GetName()));
             Assert.IsFalse(element.GetName().Contains("Desktop"));
-            windowsElementSearchSpec = WindowsElementSearchSpec.Create("window", "");
+        }
+
+        [TestMethod]
+        public void CanUseNameContainsCriteria() {
+            TestProcessHelper.LaunchProcess(TestProcessHelper.ProcessType.Calculator);
+            var windowsElementSearchSpec = WindowsElementSearchSpec.Create("window", "");
             windowsElementSearchSpec.NameContains = "Calculator";
-            element = sut.SearchWindowsElement(windowsElementSearchSpec, log);
+            var sut = new WindowsElementSearcher();
+            var log = new List<string>();
+            var element = sut.SearchWindowsElement(windowsElementSearchSpec, log);
             Assert.IsNotNull(element);
             Assert.AreEqual("Calculator", element.GetName());
+        }
+
+        [TestMethod]
+        public void CanFindWindowElementBelowElementOfSameType() {
+            TestProcessHelper.LaunchProcess(TestProcessHelper.ProcessType.Calculator);
+            var windowsElementSearchSpec = WindowsElementSearchSpec.Create("window", "");
+            windowsElementSearchSpec.NameContains = "Calculator";
             var windowsChildElementSearchSpec = WindowsElementSearchSpec.Create("group", "");
             windowsChildElementSearchSpec.NameContains = "Standard operators";
             windowsElementSearchSpec.WindowsChildElementSearchSpecs.Add(windowsChildElementSearchSpec);
+            var sut = new WindowsElementSearcher();
+            var log = new List<string>();
+            var element = sut.SearchWindowsElement(windowsElementSearchSpec, log);
+            Assert.IsNotNull(element);
+        }
+
+        [TestMethod]
+        public void CanFindElementBelowElementOfSameType() {
+            TestProcessHelper.LaunchProcess(TestProcessHelper.ProcessType.Opera);
+            var windowsElementSearchSpec = WindowsElementSearchSpec.Create("pane", "");
+            windowsElementSearchSpec.NameMustNotBeEmpty = true;
+            windowsElementSearchSpec.NameDoesNotContain = "Desktop";
+            var windowsChildElementSearchSpec = WindowsElementSearchSpec.Create("pane", "");
+            windowsChildElementSearchSpec.NameContains = "Browser-Container";
+            windowsElementSearchSpec.WindowsChildElementSearchSpecs.Add(windowsChildElementSearchSpec);
+            var sut = new WindowsElementSearcher();
+            var log = new List<string>();
+            var element = sut.SearchWindowsElement(windowsElementSearchSpec, log);
             Assert.IsNotNull(element);
         }
     }

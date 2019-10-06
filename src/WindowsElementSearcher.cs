@@ -28,9 +28,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface {
             log.Clear();
             var xpath = windowsElementSearchSpec.XPath();
             var elements = desktopSession.FindElementsByXPath(xpath).ToList();
-            var reverseSearchSpecs = elements.Select(e =>
-                new WindowsElementSearchSpec { LocalizedControlType = e.GetLocalizedControlType(), Name = e.GetName() }
-            );
+            var reverseSearchSpecs = elements.Select(e => new WindowsElementSearchSpec(e));
             log.Add(elements.Any()
                 ? $"XPath {windowsElementSearchSpec.XPath()} applied to root element resulted in {elements.Count} elements: {string.Join(", ", reverseSearchSpecs)}"
                 : $"XPath {windowsElementSearchSpec.XPath()} applied to root element did not yield any results");
@@ -89,9 +87,10 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface {
             }
 
             if (!string.IsNullOrWhiteSpace(windowsElementSearchSpec.NameContains)) {
-                if (!element.GetName().Contains(windowsElementSearchSpec.NameContains)) {
+                var elementName = element.GetName();
+                if (elementName?.Contains(windowsElementSearchSpec.NameContains) != true) {
                     if (useDepthSearch) {
-                        log.Add($"No immediate match, name {element.GetName()} does not contain {windowsElementSearchSpec.NameContains}, checking child elements");
+                        log.Add($"No immediate match, name {element.GetName() ?? "''"} does not contain {windowsElementSearchSpec.NameContains}, checking child elements");
                         if (DoesAnyChildElementMatchSearchSpec(element, windowsElementSearchSpec, depth, log, out var potentialElementOrMatchingChildElement)) {
                             elementOrMatchingChildElement = potentialElementOrMatchingChildElement;
                             if (elementOrMatchingChildElement == null) {
@@ -109,7 +108,8 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface {
             }
 
             if (!string.IsNullOrWhiteSpace(windowsElementSearchSpec.NameDoesNotContain)) {
-                if (element.GetName().Contains(windowsElementSearchSpec.NameDoesNotContain)) {
+                var elementName = element.GetName();
+                if (elementName?.Contains(windowsElementSearchSpec.NameDoesNotContain) == true) {
                     log.Add($"No immediate match, name {element.GetName()} contains {windowsElementSearchSpec.NameDoesNotContain}, checking child elements");
                     if (useDepthSearch) {
                         if (DoesAnyChildElementMatchSearchSpec(element, windowsElementSearchSpec, depth, log, out var potentialElementOrMatchingChildElement)) {
@@ -150,8 +150,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface {
         }
 
         private static bool DoesAnyChildElementMatchSearchSpec(AppiumWebElement element, WindowsElementSearchSpec windowsElementSearchSpec, int depth, ICollection<string> log, out AppiumWebElement childElement) {
-            var childElements = element.FindElementsByXPath(windowsElementSearchSpec.XPath()).ToList();
-            foreach (var e in childElements.Where(e => e.Id != element.Id)) {
+            foreach(var e in element.FindElementsByXPath(windowsElementSearchSpec.XPath(element.Id))) {
                 if (DoesElementMatchSearchSpec(e, windowsElementSearchSpec, depth + 1, log, true, out childElement)) {
                     return true;
                 }
