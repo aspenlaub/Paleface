@@ -131,7 +131,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface {
             log.Add($"Element is indeed {windowsElementSearchSpec}, checking child search specifications");
             if (!windowsElementSearchSpec.WindowsChildElementSearchSpecs.All(
                     spec => {
-                        var elements = element.FindElementsByXPath(spec.XPath()).ToList();
+                        var elements = element.FindElementsByXPath(spec.XPath(element.Id)).ToList();
                         if (!elements.Any()) {
                             log.Add($"XPath {spec.XPath()} applied to element {windowsElementSearchSpec} did not yield any results");
                         }

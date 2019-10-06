@@ -12,7 +12,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface {
         }
 
         public static IReadOnlyCollection<AppiumWebElement> FindElementsByWindowsElementSearchSpec(this AppiumWebElement element, WindowsElementSearchSpec windowsElementSearchSpec) {
-            return element.FindElementsByXPath(windowsElementSearchSpec.XPath());
+            return element.FindElementsByXPath(windowsElementSearchSpec.XPath(element.Id));
         }
     }
 }

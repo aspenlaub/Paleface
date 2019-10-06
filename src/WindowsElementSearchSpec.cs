@@ -44,8 +44,8 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface {
             return enquote ? $"\"{s}\"" : s;
         }
 
-        public string XPath(string idToExclude) {
-         return XPath() + "[not(@Id='" + idToExclude + "')]";
+        public string XPath(string parentId) {
+            return "." + XPath() + "[not(@Id='" + parentId + "')]";
         }
 
         public string XPath() {
