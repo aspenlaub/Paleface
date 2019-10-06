@@ -18,7 +18,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface {
         }
 
         public override string ToString() {
-            return $"{Name} of type {LocalizedControlType}";
+            return string.IsNullOrWhiteSpace(Name) ? $"Unnamed {LocalizedControlType}" : $"{Name} of type {LocalizedControlType}";
         }
 
         public string XPath() {

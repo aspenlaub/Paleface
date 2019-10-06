@@ -26,14 +26,14 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Test {
             var log = new List<string>();
             var element = sut.SearchWindowsElement(windowsElementSearchSpec, log);
             Assert.IsNotNull(element);
-            Assert.AreEqual(12, log.Count);
+            Assert.AreEqual(13, log.Count);
             element = sut.SearchWindowsElement(windowsElementSearchSpec, log);
             Assert.IsNotNull(element);
             TestProcessHelper.ShutDownRunningProcesses(TestProcessHelper.ProcessType.Calculator);
             log = new List<string>();
             element = sut.SearchWindowsElement(windowsElementSearchSpec, log);
             Assert.IsNull(element);
-            Assert.AreEqual(0, log.Count);
+            Assert.AreEqual(1, log.Count);
             element = sut.SearchWindowsElement(windowsElementSearchSpec);
             Assert.IsNull(element);
         }

@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OpenQA.Selenium;
@@ -25,7 +26,8 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Test {
             var windowsElementSearchSpec = WindowsElementSearchSpec.Create("window", "");
             var windowsChildElementSearchSpec = WindowsElementSearchSpec.Create("document", "Rich Text Window");
             windowsElementSearchSpec.WindowsChildElementSearchSpecs.Add(windowsChildElementSearchSpec);
-            AppiumWebElement element = sut.SearchWindowsElement(windowsElementSearchSpec);
+            var log = new List<string>();
+            AppiumWebElement element = sut.SearchWindowsElement(windowsElementSearchSpec, log);
             Assert.IsNotNull(element, "Wordpad document not found");
 
             element.SendKeys(Keys.Control + 'o' + Keys.Control);

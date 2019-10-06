@@ -27,7 +27,11 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface {
 
             log.Clear();
             var xpath = windowsElementSearchSpec.XPath();
-            var result = desktopSession.FindElementsByXPath(xpath).FirstOrDefault(e => DoesElementMatchSearchSpec(e, windowsElementSearchSpec, 0, log));
+            var elements = desktopSession.FindElementsByXPath(xpath);
+            log.Add(elements.Any()
+                ? $"XPath {windowsElementSearchSpec.XPath()} applied to root element resulted in {elements.Count} elements"
+                : $"XPath {windowsElementSearchSpec.XPath()} applied to root element did not yield any results");
+            var result = elements.FirstOrDefault(e => DoesElementMatchSearchSpec(e, windowsElementSearchSpec, 0, log));
             return result;
         }
 
