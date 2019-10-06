@@ -27,14 +27,21 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface {
         }
 
         public override string ToString() {
+            var enquote = false;
             var s = string.IsNullOrWhiteSpace(Name) ? $"Unnamed {LocalizedControlType}" : $"{Name} of type {LocalizedControlType}";
             if (!string.IsNullOrWhiteSpace(NameContains)) {
-                s += $" and name contains {NameContains}";
+                enquote = true;
+                s += $" with name containing {NameContains}";
             }
+            if (!string.IsNullOrWhiteSpace(NameDoesNotContain)) {
+                enquote = true;
+                s += $" with name not containing {NameDoesNotContain}";
+            } 
             if (NameMustNotBeEmpty) {
-                s += " and name is not empty";
+                enquote = true;
+                s += " with non-empty name";
             }
-            return s;
+            return enquote ? $"\"{s}\"" : s;
         }
 
         public string XPath() {
