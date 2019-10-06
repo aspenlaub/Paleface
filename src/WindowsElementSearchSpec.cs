@@ -32,7 +32,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface {
                 s += $" and name contains {NameContains}";
             }
             if (NameMustNotBeEmpty) {
-                s += $" and name is not empty";
+                s += " and name is not empty";
             }
             return s;
         }

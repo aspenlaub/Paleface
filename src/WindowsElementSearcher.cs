@@ -8,11 +8,11 @@ using AppiumWindowsElement = OpenQA.Selenium.Appium.Windows.WindowsElement;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Paleface {
     public class WindowsElementSearcher {
-        public AppiumWindowsElement SearchWindowsElement(WindowsElementSearchSpec windowsElementSearchSpec) {
+        public AppiumWebElement SearchWindowsElement(WindowsElementSearchSpec windowsElementSearchSpec) {
             return SearchWindowsElement(windowsElementSearchSpec, new List<string>());
         }
 
-        public AppiumWindowsElement SearchWindowsElement(WindowsElementSearchSpec windowsElementSearchSpec, List<string> log) {
+        public AppiumWebElement SearchWindowsElement(WindowsElementSearchSpec windowsElementSearchSpec, List<string> log) {
             AppiumHelper.LaunchWinAppDriverIfNecessary();
 
             var options = new AppiumOptions();
@@ -27,7 +27,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface {
 
             log.Clear();
             var xpath = windowsElementSearchSpec.XPath();
-            var elements = desktopSession.FindElementsByXPath(xpath);
+            var elements = desktopSession.FindElementsByXPath(xpath).ToList();
             var reverseSearchSpecs = elements.Select(e =>
                 new WindowsElementSearchSpec
                     { LocalizedControlType = e.GetLocalizedControlType(), Name = e.GetName() }
@@ -35,11 +35,21 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface {
             log.Add(elements.Any()
                 ? $"XPath {windowsElementSearchSpec.XPath()} applied to root element resulted in {elements.Count} elements: {string.Join(", ", reverseSearchSpecs)}"
                 : $"XPath {windowsElementSearchSpec.XPath()} applied to root element did not yield any results");
-            var result = elements.FirstOrDefault(e => DoesElementMatchSearchSpec(e, windowsElementSearchSpec, 0, log));
-            return result;
+
+            foreach(var element in elements) {
+                if (DoesElementMatchSearchSpec(element, windowsElementSearchSpec, 0, log, out var elementOrMatchingChildElement)) {
+                    return elementOrMatchingChildElement;
+                }
+            }
+            return null;
         }
 
-        private static bool DoesElementMatchSearchSpec(AppiumWebElement element, WindowsElementSearchSpec windowsElementSearchSpec, int depth, ICollection<string> log) {
+        private static bool DoesElementMatchSearchSpec(AppiumWebElement element, WindowsElementSearchSpec windowsElementSearchSpec, int depth, ICollection<string> log, out AppiumWebElement elementOrMatchingChildElement) {
+            elementOrMatchingChildElement = element;
+            if (depth > 20) {
+                throw new Exception($"Search depth exceeds {depth}");
+            }
+
             var reverseSearchSpec = new WindowsElementSearchSpec(element);
             log.Add($"Checking {windowsElementSearchSpec} against {reverseSearchSpec} at depth {depth}");
             if (element.GetLocalizedControlType() != windowsElementSearchSpec.LocalizedControlType) {
@@ -49,7 +59,12 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface {
 
             if (windowsElementSearchSpec.NameMustNotBeEmpty) {
                 if (string.IsNullOrWhiteSpace(element.GetName())) {
-                    log.Add($"Mismatch, name must not be empty");
+                    log.Add("No immediate match, name must not be empty, checking child elements");
+                    if (DoesAnyChildElementMatchSearchSpec(element, windowsElementSearchSpec, depth, log, out elementOrMatchingChildElement)) {
+                        return true;
+                    }
+
+                    log.Add("Mismatch, name must not be empty");
                     return false;
                 }
             }
@@ -61,6 +76,11 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface {
 
             if (!string.IsNullOrWhiteSpace(windowsElementSearchSpec.NameContains)) {
                 if (!element.GetName().Contains(windowsElementSearchSpec.NameContains)) {
+                    log.Add($"No immediate match, name {element.GetName()} does not contain {windowsElementSearchSpec.NameContains}, checking child elements");
+                    if (DoesAnyChildElementMatchSearchSpec(element, windowsElementSearchSpec, depth, log, out elementOrMatchingChildElement)) {
+                        return true;
+                    }
+
                     log.Add($"Mismatch, name {element.GetName()} does not contain {windowsElementSearchSpec.NameContains}");
                     return false;
                 }
@@ -68,6 +88,11 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface {
 
             if (!string.IsNullOrWhiteSpace(windowsElementSearchSpec.NameDoesNotContain)) {
                 if (element.GetName().Contains(windowsElementSearchSpec.NameDoesNotContain)) {
+                    log.Add($"No immediate match, name {element.GetName()} contains {windowsElementSearchSpec.NameDoesNotContain}, checking child elements");
+                    if (DoesAnyChildElementMatchSearchSpec(element, windowsElementSearchSpec, depth, log, out elementOrMatchingChildElement)) {
+                        return true;
+                    }
+
                     log.Add($"Mismatch, name {element.GetName()} contains {windowsElementSearchSpec.NameDoesNotContain}");
                     return false;
                 }
@@ -80,13 +105,25 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface {
                         if (!elements.Any()) {
                             log.Add($"XPath {spec.XPath()} applied to element {windowsElementSearchSpec} did not yield any results");
                         }
-                        return elements.Any(e => DoesElementMatchSearchSpec(e, spec, depth + 1, log));
+                        return elements.Any(e => DoesElementMatchSearchSpec(e, spec, depth + 1, log, out _));
                     })) {
                     return false;
             }
 
             log.Add($"Found '{windowsElementSearchSpec.Name}' of type '{windowsElementSearchSpec.LocalizedControlType}' at depth {depth}");
             return true;
+        }
+
+        private static bool DoesAnyChildElementMatchSearchSpec(AppiumWebElement element, WindowsElementSearchSpec windowsElementSearchSpec, int depth, ICollection<string> log, out AppiumWebElement childElement) {
+            var childElements = element.FindElementsByXPath(windowsElementSearchSpec.XPath()).ToList();
+            foreach (var e in childElements.Where(e => e.Id != element.Id)) {
+                if (DoesElementMatchSearchSpec(e, windowsElementSearchSpec, depth + 1, log, out childElement)) {
+                    return true;
+                }
+            }
+
+            childElement = null;
+            return false;
         }
     }
 }

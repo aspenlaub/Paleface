@@ -3,7 +3,6 @@ using System.IO;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OpenQA.Selenium;
-using OpenQA.Selenium.Appium;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Test {
     [TestClass]
@@ -27,7 +26,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Test {
             var windowsChildElementSearchSpec = WindowsElementSearchSpec.Create("document", "Rich Text Window");
             windowsElementSearchSpec.WindowsChildElementSearchSpecs.Add(windowsChildElementSearchSpec);
             var log = new List<string>();
-            AppiumWebElement element = sut.SearchWindowsElement(windowsElementSearchSpec, log);
+            var element = sut.SearchWindowsElement(windowsElementSearchSpec, log);
             Assert.IsNotNull(element, "Wordpad document not found");
 
             element.SendKeys(Keys.Control + 'o' + Keys.Control);
@@ -35,7 +34,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Test {
             windowsElementSearchSpec = WindowsElementSearchSpec.Create("window", "");
             windowsChildElementSearchSpec = WindowsElementSearchSpec.Create("dialog", "Open");
             windowsElementSearchSpec.WindowsChildElementSearchSpecs.Add(windowsChildElementSearchSpec);
-            element = sut.SearchWindowsElement(windowsElementSearchSpec);
+            element = sut.SearchWindowsElement(windowsElementSearchSpec, log);
             Assert.IsNotNull(element, "File dialog not found");
 
             element = element.FindElementsByWindowsElementSearchSpec(new WindowsElementSearchSpec { Name = "File name:", LocalizedControlType = "edit" }).FirstOrDefault();

@@ -59,6 +59,10 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Test {
             element = sut.SearchWindowsElement(windowsElementSearchSpec, log);
             Assert.IsNotNull(element);
             Assert.AreEqual("Calculator", element.GetName());
+            var windowsChildElementSearchSpec = WindowsElementSearchSpec.Create("group", "");
+            windowsChildElementSearchSpec.NameContains = "Standard operators";
+            windowsElementSearchSpec.WindowsChildElementSearchSpecs.Add(windowsChildElementSearchSpec);
+            Assert.IsNotNull(element);
         }
     }
 }
