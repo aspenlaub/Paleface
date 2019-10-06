@@ -67,7 +67,8 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface {
                 if (string.IsNullOrWhiteSpace(element.GetName())) {
                     if (useDepthSearch) {
                         log.Add("No immediate match, name must not be empty, checking child elements");
-                        if (DoesAnyChildElementMatchSearchSpec(element, windowsElementSearchSpec, depth, log, out elementOrMatchingChildElement)) {
+                        if (DoesAnyChildElementMatchSearchSpec(element, windowsElementSearchSpec, depth, log, out var potentialElementOrMatchingChildElement)) {
+                            elementOrMatchingChildElement = potentialElementOrMatchingChildElement;
                             if (elementOrMatchingChildElement == null) {
                                 throw new Exception("Child element matches search specification, but no element is returned");
                             }
@@ -89,7 +90,8 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface {
                 if (!element.GetName().Contains(windowsElementSearchSpec.NameContains)) {
                     if (useDepthSearch) {
                         log.Add($"No immediate match, name {element.GetName()} does not contain {windowsElementSearchSpec.NameContains}, checking child elements");
-                        if (DoesAnyChildElementMatchSearchSpec(element, windowsElementSearchSpec, depth, log, out elementOrMatchingChildElement)) {
+                        if (DoesAnyChildElementMatchSearchSpec(element, windowsElementSearchSpec, depth, log, out var potentialElementOrMatchingChildElement)) {
+                            elementOrMatchingChildElement = potentialElementOrMatchingChildElement;
                             if (elementOrMatchingChildElement == null) {
                                 throw new Exception("Child element matches search specification, but no element is returned");
                             }
@@ -107,7 +109,8 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface {
                 if (element.GetName().Contains(windowsElementSearchSpec.NameDoesNotContain)) {
                     log.Add($"No immediate match, name {element.GetName()} contains {windowsElementSearchSpec.NameDoesNotContain}, checking child elements");
                     if (useDepthSearch) {
-                        if (DoesAnyChildElementMatchSearchSpec(element, windowsElementSearchSpec, depth, log, out elementOrMatchingChildElement)) {
+                        if (DoesAnyChildElementMatchSearchSpec(element, windowsElementSearchSpec, depth, log, out var potentialElementOrMatchingChildElement)) {
+                            elementOrMatchingChildElement = potentialElementOrMatchingChildElement;
                             if (elementOrMatchingChildElement == null) {
                                 throw new Exception("Child element matches search specification, but no element is returned");
                             }
