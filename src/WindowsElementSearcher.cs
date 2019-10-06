@@ -40,7 +40,8 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface {
         }
 
         private static bool DoesElementMatchSearchSpec(AppiumWebElement element, WindowsElementSearchSpec windowsElementSearchSpec, int depth, ICollection<string> log) {
-            log.Add($"Checking {windowsElementSearchSpec} at depth {depth}");
+            var reverseSearchSpec = new WindowsElementSearchSpec { LocalizedControlType = element.GetAttribute("LocalizedControlType"), Name = element.GetAttribute("Name") };
+            log.Add($"Checking {windowsElementSearchSpec} against {reverseSearchSpec} at depth {depth}");
             if (element.GetAttribute("LocalizedControlType") != windowsElementSearchSpec.LocalizedControlType) {
                 log.Add($"Mismatch, localized control type is {element.GetAttribute("LocalizedControlType")}");
                 return false;
