@@ -72,6 +72,8 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface {
                             if (elementOrMatchingChildElement == null) {
                                 throw new Exception("Child element matches search specification, but no element is returned");
                             }
+
+                            log.Add($"Found '{elementOrMatchingChildElement.GetName()}' of type '{elementOrMatchingChildElement.GetLocalizedControlType()}' at depth {depth}");
                             return true;
                         }
                     }
@@ -96,6 +98,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface {
                                 throw new Exception("Child element matches search specification, but no element is returned");
                             }
 
+                            log.Add($"Found '{elementOrMatchingChildElement.GetName()}' of type '{elementOrMatchingChildElement.GetLocalizedControlType()}' at depth {depth}");
                             return true;
                         }
                     }
@@ -115,6 +118,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface {
                                 throw new Exception("Child element matches search specification, but no element is returned");
                             }
 
+                            log.Add($"Found '{elementOrMatchingChildElement.GetName()}' of type '{elementOrMatchingChildElement.GetLocalizedControlType()}' at depth {depth}");
                             return true;
                         }
                     }
@@ -133,13 +137,15 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface {
                         }
                         return elements.Any(e => DoesElementMatchSearchSpec(e, spec, depth + 1, log, useDepthSearch, out _));
                     })) {
+
+                log.Add($"Child specifications not met for '{elementOrMatchingChildElement.GetName()}' of type '{elementOrMatchingChildElement.GetLocalizedControlType()}' at depth {depth}");
                 return false;
             }
 
-            log.Add($"Found '{windowsElementSearchSpec.Name}' of type '{windowsElementSearchSpec.LocalizedControlType}' at depth {depth}");
             if (elementOrMatchingChildElement == null) {
                 throw new Exception("Child element matches search specification, but no element is returned");
             }
+            log.Add($"Found '{elementOrMatchingChildElement.GetName()}' of type '{elementOrMatchingChildElement.GetLocalizedControlType()}' at depth {depth}");
             return true;
         }
 
