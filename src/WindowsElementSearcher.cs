@@ -30,7 +30,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface {
             var elements = desktopSession.FindElementsByXPath(xpath);
             var reverseSearchSpecs = elements.Select(e =>
                 new WindowsElementSearchSpec
-                    { LocalizedControlType = e.GetAttribute("LocalizedControlType"), Name = e.GetAttribute("Name") }
+                    { LocalizedControlType = e.GetLocalizedControlType(), Name = e.GetName() }
             );
             log.Add(elements.Any()
                 ? $"XPath {windowsElementSearchSpec.XPath()} applied to root element resulted in {elements.Count} elements: {string.Join(", ", reverseSearchSpecs)}"
@@ -40,16 +40,37 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface {
         }
 
         private static bool DoesElementMatchSearchSpec(AppiumWebElement element, WindowsElementSearchSpec windowsElementSearchSpec, int depth, ICollection<string> log) {
-            var reverseSearchSpec = new WindowsElementSearchSpec { LocalizedControlType = element.GetAttribute("LocalizedControlType"), Name = element.GetAttribute("Name") };
+            var reverseSearchSpec = new WindowsElementSearchSpec(element);
             log.Add($"Checking {windowsElementSearchSpec} against {reverseSearchSpec} at depth {depth}");
-            if (element.GetAttribute("LocalizedControlType") != windowsElementSearchSpec.LocalizedControlType) {
-                log.Add($"Mismatch, localized control type is {element.GetAttribute("LocalizedControlType")}");
+            if (element.GetLocalizedControlType() != windowsElementSearchSpec.LocalizedControlType) {
+                log.Add($"Mismatch, localized control type is {element.GetLocalizedControlType()}");
                 return false;
             }
 
-            if (!string.IsNullOrWhiteSpace(windowsElementSearchSpec.Name) && element.GetAttribute("Name") != windowsElementSearchSpec.Name) {
-                log.Add($"Mismatch, name is {element.GetAttribute("Name")}");
+            if (windowsElementSearchSpec.NameMustNotBeEmpty) {
+                if (string.IsNullOrWhiteSpace(element.GetName())) {
+                    log.Add($"Mismatch, name must not be empty");
+                    return false;
+                }
+            }
+
+            if (!string.IsNullOrWhiteSpace(windowsElementSearchSpec.Name) && element.GetName() != windowsElementSearchSpec.Name) {
+                log.Add($"Mismatch, name is {element.GetName()}");
                 return false;
+            }
+
+            if (!string.IsNullOrWhiteSpace(windowsElementSearchSpec.NameContains)) {
+                if (!element.GetName().Contains(windowsElementSearchSpec.NameContains)) {
+                    log.Add($"Mismatch, name {element.GetName()} does not contain {windowsElementSearchSpec.NameContains}");
+                    return false;
+                }
+            }
+
+            if (!string.IsNullOrWhiteSpace(windowsElementSearchSpec.NameDoesNotContain)) {
+                if (element.GetName().Contains(windowsElementSearchSpec.NameDoesNotContain)) {
+                    log.Add($"Mismatch, name {element.GetName()} contains {windowsElementSearchSpec.NameDoesNotContain}");
+                    return false;
+                }
             }
 
             log.Add($"Element is indeed {windowsElementSearchSpec}, checking child search specifications");

@@ -37,5 +37,28 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Test {
             element = sut.SearchWindowsElement(windowsElementSearchSpec);
             Assert.IsNull(element);
         }
+
+        [TestMethod]
+        public void CanUseOptionalSearchCriteria() {
+            var windowsElementSearchSpec = WindowsElementSearchSpec.Create("pane", "");
+            windowsElementSearchSpec.NameMustNotBeEmpty = true;
+            var sut = new WindowsElementSearcher();
+            var log = new List<string>();
+            var element = sut.SearchWindowsElement(windowsElementSearchSpec, log);
+            Assert.IsNotNull(element);
+            var elementName = element.GetName();
+            Assert.IsFalse(string.IsNullOrWhiteSpace(elementName));
+            Assert.IsTrue(elementName.Contains("Desktop"));
+            windowsElementSearchSpec.NameDoesNotContain = "Desktop";
+            element = sut.SearchWindowsElement(windowsElementSearchSpec, log);
+            Assert.IsNotNull(element);
+            Assert.IsFalse(string.IsNullOrWhiteSpace(element.GetName()));
+            Assert.IsFalse(element.GetName().Contains("Desktop"));
+            windowsElementSearchSpec = WindowsElementSearchSpec.Create("window", "");
+            windowsElementSearchSpec.NameContains = "Calculator";
+            element = sut.SearchWindowsElement(windowsElementSearchSpec, log);
+            Assert.IsNotNull(element);
+            Assert.AreEqual("Calculator", element.GetName());
+        }
     }
 }
