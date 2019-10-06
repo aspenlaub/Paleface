@@ -45,5 +45,29 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Test {
             comboTextBox.Text = fileName;
             Assert.AreEqual(fileName, comboTextBox.Text);
         }
+
+        [TestMethod]
+        public void CannotFindFileNameViaPanes() {
+            var sut = new WindowsElementSearcher();
+
+            var windowsElementSearchSpec = WindowsElementSearchSpec.Create("window", "");
+            var windowsChildElementSearchSpec = WindowsElementSearchSpec.Create("document", "Rich Text Window");
+            windowsElementSearchSpec.WindowsChildElementSearchSpecs.Add(windowsChildElementSearchSpec);
+            var log = new List<string>();
+            var element = sut.SearchWindowsElement(windowsElementSearchSpec, log);
+            Assert.IsNotNull(element, "Wordpad document not found");
+
+            element.SendKeys(Keys.Control + 'o' + Keys.Control);
+
+            windowsElementSearchSpec = WindowsElementSearchSpec.Create("pane", "");
+            windowsElementSearchSpec.NameMustNotBeEmpty = true;
+            windowsElementSearchSpec.NameDoesNotContain = "Desktop";
+            windowsChildElementSearchSpec = WindowsElementSearchSpec.Create("dialog", "");
+            var windowsGrandChildElementSearchSpec = new WindowsElementSearchSpec { Name = "File name:", LocalizedControlType = "edit" };
+            windowsChildElementSearchSpec.WindowsChildElementSearchSpecs.Add(windowsGrandChildElementSearchSpec);
+            windowsElementSearchSpec.WindowsChildElementSearchSpecs.Add(windowsChildElementSearchSpec);
+            element = sut.SearchWindowsElement(windowsElementSearchSpec, log);
+            Assert.IsNull(element, "File name was found");
+        }
     }
 }

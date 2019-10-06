@@ -45,16 +45,25 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface {
         }
 
         public string XPath(string parentId) {
-            return "." + XPath() + "[not(@Id='" + parentId + "')]";
+            var conditions = XPathConditions();
+            // conditions.Add("not(#id='" + parentId + "')"); does not work
+            return "./*//*[" + string.Join(" and ", conditions) + ']';
         }
 
         public string XPath() {
-            var xpath = "//*[@LocalizedControlType='" + LocalizedControlType + "']";
+            var conditions = XPathConditions();
+            return "//*[" + string.Join(" and ", conditions) + ']';
+        }
+
+        private List<string> XPathConditions() {
+            var conditions = new List<string> {
+                "@LocalizedControlType='" + LocalizedControlType + "'"
+            };
             if (!string.IsNullOrWhiteSpace(Name)) {
-                xpath = xpath + "[@Name='" + Name + "']";
+                conditions.Add("@Name='" + Name + "'");
             }
 
-            return xpath;
+            return conditions;
         }
     }
 }

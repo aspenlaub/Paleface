@@ -35,7 +35,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface {
 
             foreach (var useDepthSearch in new[] { false, true }) {
                 foreach (var element in elements) {
-                    if (!DoesElementMatchSearchSpec(element, windowsElementSearchSpec, 0, log, useDepthSearch, out var elementOrMatchingChildElement)) {
+                    if (!DoesElementMatchSearchSpec(element, windowsElementSearchSpec, 0, log, useDepthSearch, "", out var elementOrMatchingChildElement)) {
                         continue;
                     }
 
@@ -48,7 +48,13 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface {
             return null;
         }
 
-        private static bool DoesElementMatchSearchSpec(AppiumWebElement element, WindowsElementSearchSpec windowsElementSearchSpec, int depth, ICollection<string> log, bool useDepthSearch, out AppiumWebElement elementOrMatchingChildElement) {
+        private static bool DoesElementMatchSearchSpec(AppiumWebElement element, WindowsElementSearchSpec windowsElementSearchSpec, int depth, ICollection<string> log, bool useDepthSearch, string parentElementIds, out AppiumWebElement elementOrMatchingChildElement) {
+            if (parentElementIds.Contains(element.Id + ';')) {
+                throw new Exception($"Element {element.Id} already is a parent element");
+            }
+
+            parentElementIds += element.Id + ';';
+
             elementOrMatchingChildElement = element;
             if (depth > 20) {
                 throw new Exception($"Search depth exceeds {depth}");
@@ -65,7 +71,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface {
                 if (string.IsNullOrWhiteSpace(element.GetName())) {
                     if (useDepthSearch) {
                         log.Add("No immediate match, name must not be empty, checking child elements");
-                        if (DoesAnyChildElementMatchSearchSpec(element, windowsElementSearchSpec, depth, log, out var potentialElementOrMatchingChildElement)) {
+                        if (DoesAnyChildElementMatchSearchSpec(element, windowsElementSearchSpec, depth, log, parentElementIds, out var potentialElementOrMatchingChildElement)) {
                             elementOrMatchingChildElement = potentialElementOrMatchingChildElement;
                             if (elementOrMatchingChildElement == null) {
                                 throw new Exception("Child element matches search specification, but no element is returned");
@@ -91,7 +97,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface {
                 if (elementName?.Contains(windowsElementSearchSpec.NameContains) != true) {
                     if (useDepthSearch) {
                         log.Add($"No immediate match, name {element.GetName() ?? "''"} does not contain {windowsElementSearchSpec.NameContains}, checking child elements");
-                        if (DoesAnyChildElementMatchSearchSpec(element, windowsElementSearchSpec, depth, log, out var potentialElementOrMatchingChildElement)) {
+                        if (DoesAnyChildElementMatchSearchSpec(element, windowsElementSearchSpec, depth, log, parentElementIds, out var potentialElementOrMatchingChildElement)) {
                             elementOrMatchingChildElement = potentialElementOrMatchingChildElement;
                             if (elementOrMatchingChildElement == null) {
                                 throw new Exception("Child element matches search specification, but no element is returned");
@@ -112,7 +118,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface {
                 if (elementName?.Contains(windowsElementSearchSpec.NameDoesNotContain) == true) {
                     log.Add($"No immediate match, name {element.GetName()} contains {windowsElementSearchSpec.NameDoesNotContain}, checking child elements");
                     if (useDepthSearch) {
-                        if (DoesAnyChildElementMatchSearchSpec(element, windowsElementSearchSpec, depth, log, out var potentialElementOrMatchingChildElement)) {
+                        if (DoesAnyChildElementMatchSearchSpec(element, windowsElementSearchSpec, depth, log, parentElementIds, out var potentialElementOrMatchingChildElement)) {
                             elementOrMatchingChildElement = potentialElementOrMatchingChildElement;
                             if (elementOrMatchingChildElement == null) {
                                 throw new Exception("Child element matches search specification, but no element is returned");
@@ -135,7 +141,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface {
                         if (!elements.Any()) {
                             log.Add($"XPath {spec.XPath()} applied to element {windowsElementSearchSpec} did not yield any results");
                         }
-                        return elements.Any(e => DoesElementMatchSearchSpec(e, spec, depth + 1, log, useDepthSearch, out _));
+                        return elements.Any(e => DoesElementMatchSearchSpec(e, spec, depth + 1, log, useDepthSearch, parentElementIds, out _));
                     })) {
 
                 log.Add($"Child specifications not met for '{elementOrMatchingChildElement.GetName()}' of type '{elementOrMatchingChildElement.GetLocalizedControlType()}' at depth {depth}");
@@ -149,9 +155,13 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface {
             return true;
         }
 
-        private static bool DoesAnyChildElementMatchSearchSpec(AppiumWebElement element, WindowsElementSearchSpec windowsElementSearchSpec, int depth, ICollection<string> log, out AppiumWebElement childElement) {
-            foreach(var e in element.FindElementsByXPath(windowsElementSearchSpec.XPath(element.Id))) {
-                if (DoesElementMatchSearchSpec(e, windowsElementSearchSpec, depth + 1, log, true, out childElement)) {
+        private static bool DoesAnyChildElementMatchSearchSpec(AppiumWebElement element, WindowsElementSearchSpec windowsElementSearchSpec, int depth, ICollection<string> log, string parentElementIds, out AppiumWebElement childElement) {
+            var elements = element.FindElementsByXPath(windowsElementSearchSpec.XPath(element.Id)).ToList();
+            foreach (var e in elements) {
+                if (parentElementIds.Contains(e.Id + ';')) {
+                    throw new Exception($"Element {element.Id} already is a parent element");
+                }
+                if (DoesElementMatchSearchSpec(e, windowsElementSearchSpec, depth + 1, log, true, parentElementIds, out childElement)) {
                     return true;
                 }
             }
