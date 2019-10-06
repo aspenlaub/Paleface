@@ -26,7 +26,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Test {
             var log = new List<string>();
             var element = sut.SearchWindowsElement(windowsElementSearchSpec, log);
             Assert.IsNotNull(element);
-            Assert.AreEqual(4, log.Count);
+            Assert.AreEqual(12, log.Count);
             element = sut.SearchWindowsElement(windowsElementSearchSpec, log);
             Assert.IsNotNull(element);
             TestProcessHelper.ShutDownRunningProcesses(TestProcessHelper.ProcessType.Calculator);

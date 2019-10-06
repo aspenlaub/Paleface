@@ -32,12 +32,26 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface {
         }
 
         private static bool DoesElementMatchSearchSpec(AppiumWebElement element, WindowsElementSearchSpec windowsElementSearchSpec, int depth, ICollection<string> log) {
-            if (element.GetAttribute("LocalizedControlType") != windowsElementSearchSpec.LocalizedControlType) { return false; }
-            if (!string.IsNullOrWhiteSpace(windowsElementSearchSpec.Name) && element.GetAttribute("Name") != windowsElementSearchSpec.Name) { return false; }
+            log.Add($"Checking {windowsElementSearchSpec} at depth {depth}");
+            if (element.GetAttribute("LocalizedControlType") != windowsElementSearchSpec.LocalizedControlType) {
+                log.Add($"Mismatch, localized control type is {element.GetAttribute("LocalizedControlType")}");
+                return false;
+            }
 
+            if (!string.IsNullOrWhiteSpace(windowsElementSearchSpec.Name) && element.GetAttribute("Name") != windowsElementSearchSpec.Name) {
+                log.Add($"Mismatch, name is {element.GetAttribute("Name")}");
+                return false;
+            }
+
+            log.Add($"Element is indeed {windowsElementSearchSpec}, checking child search specifications");
             if (!windowsElementSearchSpec.WindowsChildElementSearchSpecs.All(
-                    spec => element.FindElementsByXPath(spec.XPath()).Any(e => DoesElementMatchSearchSpec(e, spec, depth + 1, log))
-                )) {
+                    spec => {
+                        var elements = element.FindElementsByXPath(spec.XPath()).ToList();
+                        if (!elements.Any()) {
+                            log.Add($"XPath {spec.XPath()} applied to element {windowsElementSearchSpec} did not yield any results");
+                        }
+                        return elements.Any(e => DoesElementMatchSearchSpec(e, spec, depth + 1, log));
+                    })) {
                     return false;
             }
 
