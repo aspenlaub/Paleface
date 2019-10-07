@@ -26,7 +26,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Test {
             windowsElementSearchSpec.WindowsChildElementSearchSpecs.Add(windowsChildElementSearchSpec);
             var log = new List<string>();
             var element = sut.SearchWindowsElement(windowsElementSearchSpec, log);
-            Assert.IsNotNull(element, "Wordpad document not found");
+            Assert.IsNotNull(element, $"Wordpad document not found\r\n{string.Join("\r\n", log)}");
 
             element.SendKeys(Keys.Control + 'o' + Keys.Control);
 
@@ -34,10 +34,10 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Test {
             windowsChildElementSearchSpec = WindowsElementSearchSpec.Create("#32770", "Open");
             windowsElementSearchSpec.WindowsChildElementSearchSpecs.Add(windowsChildElementSearchSpec);
             element = sut.SearchWindowsElement(windowsElementSearchSpec, log);
-            Assert.IsNotNull(element, "File dialog not found");
+            Assert.IsNotNull(element, $"File dialog not found\r\n{string.Join("\r\n", log)}");
 
             element = sut.SearchWindowsElement(element, WindowsElementSearchSpec.Create(UiClassNames.Edit , "File name:"), log);
-            Assert.IsNotNull(element, "File name not found");
+            Assert.IsNotNull(element, $"File name not found\r\n{string.Join("\r\n", log)}");
 
             var comboTextBox = new TextBox(element);
             var fileName = Path.GetTempPath() + @"\TextFile.txt";
