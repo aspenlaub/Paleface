@@ -5,6 +5,10 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface {
     public class TextBox {
         protected AppiumWebElement EditableElement;
 
+        public string AutomationId => EditableElement.GetAutomationId();
+        public string ClassName => EditableElement.GetClassName();
+        public string Name => EditableElement.GetName();
+
         public string Text {
             get => EditableElement.Text;
             set {

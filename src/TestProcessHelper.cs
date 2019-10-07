@@ -7,8 +7,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface {
     public class TestProcessHelper {
         public enum ProcessType {
             Calculator,
-            WordPad,
-            Opera
+            WordPad
         }
 
         private static string ProcessName(ProcessType processType) {
@@ -44,9 +43,6 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface {
                 case ProcessType.WordPad:
                     executable = "wordpad.exe";
                     break;
-                case ProcessType.Opera:
-                    executable = "opera.exe";
-                    break;
                 default:
                     throw  new NotImplementedException();
             }
@@ -60,14 +56,9 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface {
             };
             process.Start();
             Thread.Sleep(TimeSpan.FromSeconds(5));
-            if (processType == ProcessType.Opera) {
-                if (Process.GetProcessesByName(processName).Length == 0) {
-                    throw new Exception($"{Enum.GetName(typeof(ProcessType), processType)} process could not be started");
-                }
-            } else if (Process.GetProcessesByName(processName).Length != 1) {
+            if (Process.GetProcessesByName(processName).Length != 1) {
                 throw new Exception($"{Enum.GetName(typeof(ProcessType), processType)} process could not be started");
             }
         }
-
     }
 }

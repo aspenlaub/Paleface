@@ -14,8 +14,11 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Test {
         public void CanUseTextBox() {
             using var sut = new WindowsElement(SampleWindowExecutable, SampleWindowTitle, () => {});
 
-            var textBox = sut.FindTextBox("SampleTextBox");
+            var textBox = sut.FindTextBox("SampleTextBoxAutoId");
             Assert.IsNotNull(textBox);
+            Assert.AreEqual("SampleTextBoxAutoId", textBox.AutomationId);
+            Assert.AreEqual(UiClassNames.TextBox, textBox.ClassName);
+            Assert.AreEqual("SampleTextBoxAutoName", textBox.Name);
             textBox.Clear();
             Assert.AreEqual(string.Empty, textBox.Text);
             const string text = @"Works with a simple text, the words 'yes' and 'zero'";
@@ -30,8 +33,11 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Test {
         public void CanUseComboBox() {
             using var sut = new WindowsElement(SampleWindowExecutable, SampleWindowTitle, () => { });
 
-            var comboBox = sut.FindTextBox("SampleComboBox");
+            var comboBox = sut.FindTextBox("SampleComboBoxAutoId");
             Assert.IsNotNull(comboBox);
+            Assert.AreEqual("SampleComboBoxAutoId", comboBox.AutomationId);
+            Assert.AreEqual(UiClassNames.ComboBox, comboBox.ClassName);
+            Assert.AreEqual("SampleComboBoxAutoName", comboBox.Name);
             comboBox.Clear();
             Assert.AreEqual(string.Empty, comboBox.Text);
             const string text = @"Works with a simple text, the words 'yes' and 'zero'";

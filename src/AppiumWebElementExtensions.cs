@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using OpenQA.Selenium.Appium;
+﻿using OpenQA.Selenium.Appium;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Paleface {
     public static class AppiumWebElementExtensions {
@@ -7,12 +6,12 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface {
             return element.GetAttribute("Name");
         }
 
-        public static string GetLocalizedControlType(this AppiumWebElement element) {
-            return element.GetAttribute("LocalizedControlType");
+        public static string GetAutomationId(this AppiumWebElement element) {
+            return element.GetAttribute("AutomationId");
         }
 
-        public static IReadOnlyCollection<AppiumWebElement> FindElementsByWindowsElementSearchSpec(this AppiumWebElement element, WindowsElementSearchSpec windowsElementSearchSpec) {
-            return element.FindElementsByXPath(windowsElementSearchSpec.XPath(element.Id));
+        public static string GetClassName(this AppiumWebElement element) {
+            return element.GetAttribute("ClassName");
         }
     }
 }

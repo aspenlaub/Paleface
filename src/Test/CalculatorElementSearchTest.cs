@@ -1,54 +1,63 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Test {
     [TestClass]
     public class CalculatorElementSearchTest {
-        [TestInitialize]
-        public void Initialize() {
+        [ClassInitialize]
+        public static void Initialize(TestContext context) {
             TestProcessHelper.ShutDownRunningProcesses(TestProcessHelper.ProcessType.Calculator);
-            TestProcessHelper.ShutDownRunningProcesses(TestProcessHelper.ProcessType.Opera);
+            TestProcessHelper.LaunchProcess(TestProcessHelper.ProcessType.Calculator);
         }
 
-        [TestCleanup]
-        public void Cleanup() {
+        [ClassCleanup]
+        public static void Cleanup() {
             TestProcessHelper.ShutDownRunningProcesses(TestProcessHelper.ProcessType.Calculator);
-            TestProcessHelper.ShutDownRunningProcesses(TestProcessHelper.ProcessType.Opera);
         }
 
         [TestMethod]
         public void CanFindCalculator() {
-            TestProcessHelper.LaunchProcess(TestProcessHelper.ProcessType.Calculator);
-            var windowsElementSearchSpec = WindowsElementSearchSpec.Create("window", "Calculator");
-            var windowsChildElementSearchSpec = WindowsElementSearchSpec.Create("group", "Standard functions");
+            var windowsElementSearchSpec = WindowsElementSearchSpec.Create(UiClassNames.ApplicationFrameWindow, "Calculator");
+            var windowsChildElementSearchSpec = WindowsElementSearchSpec.Create(UiClassNames.NamedContainerAutomationPeer, "Standard functions");
             windowsElementSearchSpec.WindowsChildElementSearchSpecs.Add(windowsChildElementSearchSpec);
-            windowsChildElementSearchSpec.WindowsChildElementSearchSpecs.Add(WindowsElementSearchSpec.Create("button", "Square root"));
-            windowsChildElementSearchSpec.WindowsChildElementSearchSpecs.Add(WindowsElementSearchSpec.Create("button", "Cube"));
+            windowsChildElementSearchSpec.WindowsChildElementSearchSpecs.Add(WindowsElementSearchSpec.Create(UiClassNames.Button, "Square root"));
+            windowsChildElementSearchSpec.WindowsChildElementSearchSpecs.Add(WindowsElementSearchSpec.Create(UiClassNames.Button, "Cube"));
             var sut = new WindowsElementSearcher();
             var log = new List<string>();
             var element = sut.SearchWindowsElement(windowsElementSearchSpec, log);
             Assert.IsNotNull(element);
-            Assert.AreEqual(13, log.Count);
+            Assert.AreEqual("Calculator", element.GetName());
+            Assert.AreEqual(UiClassNames.ApplicationFrameWindow, element.GetClassName());
+            Assert.AreEqual(16, log.Count);
             element = sut.SearchWindowsElement(windowsElementSearchSpec, log);
             Assert.IsNotNull(element);
+        }
+
+        [TestMethod]
+        public void CannotFindShutDownCalculator() {
             TestProcessHelper.ShutDownRunningProcesses(TestProcessHelper.ProcessType.Calculator);
-            log = new List<string>();
-            element = sut.SearchWindowsElement(windowsElementSearchSpec, log);
+            var windowsElementSearchSpec = WindowsElementSearchSpec.Create(UiClassNames.ApplicationFrameWindow, "Calculator");
+            var sut = new WindowsElementSearcher();
+            var log = new List<string>();
+            var element = sut.SearchWindowsElement(windowsElementSearchSpec, log);
             Assert.IsNull(element);
             Assert.AreEqual(1, log.Count);
             element = sut.SearchWindowsElement(windowsElementSearchSpec);
             Assert.IsNull(element);
+            TestProcessHelper.LaunchProcess(TestProcessHelper.ProcessType.Calculator);
         }
 
         [TestMethod]
         public void CanUseOptionalSearchCriteria() {
-            TestProcessHelper.LaunchProcess(TestProcessHelper.ProcessType.Calculator);
-            var windowsElementSearchSpec = WindowsElementSearchSpec.Create("pane", "");
+            var windowsElementSearchSpec = WindowsElementSearchSpec.Create("", "Desktop 1");
             windowsElementSearchSpec.NameMustNotBeEmpty = true;
             var sut = new WindowsElementSearcher();
             var log = new List<string>();
             var element = sut.SearchWindowsElement(windowsElementSearchSpec, log);
             Assert.IsNotNull(element);
+            Assert.AreEqual("Desktop 1", element.GetName());
+            Assert.AreEqual("#32769", element.GetClassName());
             var elementName = element.GetName();
             Assert.IsFalse(string.IsNullOrWhiteSpace(elementName));
             Assert.IsTrue(elementName.Contains("Desktop"));
@@ -56,57 +65,28 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Test {
 
         [TestMethod]
         public void CanUseNameDoesNotContainCriteria() {
-            TestProcessHelper.LaunchProcess(TestProcessHelper.ProcessType.Calculator);
-            var windowsElementSearchSpec = WindowsElementSearchSpec.Create("pane", "");
+            var windowsElementSearchSpec = WindowsElementSearchSpec.Create(UiClassNames.Button, "");
             windowsElementSearchSpec.NameMustNotBeEmpty = true;
-            windowsElementSearchSpec.NameDoesNotContain = "Desktop";
+            windowsElementSearchSpec.NameDoesNotContain = new List<string> { "User Notifications Indicator", "Open Navigation" , "Keep on top", "Minimize", "Restore", "Close" };
             var sut = new WindowsElementSearcher();
             var log = new List<string>();
             var element = sut.SearchWindowsElement(windowsElementSearchSpec, log);
             Assert.IsNotNull(element);
             Assert.IsFalse(string.IsNullOrWhiteSpace(element.GetName()));
-            Assert.IsFalse(element.GetName().Contains("Desktop"));
+            Assert.IsFalse(windowsElementSearchSpec.NameDoesNotContain.Any(n => element.GetName().Contains(n)));
         }
 
         [TestMethod]
         public void CanUseNameContainsCriteria() {
-            TestProcessHelper.LaunchProcess(TestProcessHelper.ProcessType.Calculator);
-            var windowsElementSearchSpec = WindowsElementSearchSpec.Create("window", "");
+            var windowsElementSearchSpec = WindowsElementSearchSpec.Create(UiClassNames.ApplicationFrameWindow, "Calculator");
             windowsElementSearchSpec.NameContains = "Calculator";
             var sut = new WindowsElementSearcher();
             var log = new List<string>();
             var element = sut.SearchWindowsElement(windowsElementSearchSpec, log);
             Assert.IsNotNull(element);
             Assert.AreEqual("Calculator", element.GetName());
-        }
-
-        [TestMethod]
-        public void CanFindWindowElementBelowElementOfSameType() {
-            TestProcessHelper.LaunchProcess(TestProcessHelper.ProcessType.Calculator);
-            var windowsElementSearchSpec = WindowsElementSearchSpec.Create("window", "");
-            windowsElementSearchSpec.NameContains = "Calculator";
-            var windowsChildElementSearchSpec = WindowsElementSearchSpec.Create("group", "");
-            windowsChildElementSearchSpec.NameContains = "Standard operators";
-            windowsElementSearchSpec.WindowsChildElementSearchSpecs.Add(windowsChildElementSearchSpec);
-            var sut = new WindowsElementSearcher();
-            var log = new List<string>();
-            var element = sut.SearchWindowsElement(windowsElementSearchSpec, log);
-            Assert.IsNotNull(element);
-        }
-
-        [TestMethod]
-        public void CanFindElementBelowElementOfSameType() {
-            TestProcessHelper.LaunchProcess(TestProcessHelper.ProcessType.Opera);
-            var windowsElementSearchSpec = WindowsElementSearchSpec.Create("pane", "");
-            windowsElementSearchSpec.NameMustNotBeEmpty = true;
-            windowsElementSearchSpec.NameDoesNotContain = "Desktop";
-            var windowsChildElementSearchSpec = WindowsElementSearchSpec.Create("pane", "");
-            windowsChildElementSearchSpec.NameContains = "Browser-Container";
-            windowsElementSearchSpec.WindowsChildElementSearchSpecs.Add(windowsChildElementSearchSpec);
-            var sut = new WindowsElementSearcher();
-            var log = new List<string>();
-            var element = sut.SearchWindowsElement(windowsElementSearchSpec, log);
-            Assert.IsNotNull(element);
+            Assert.AreEqual(UiClassNames.ApplicationFrameWindow, element.GetClassName());
+            Assert.AreEqual("Calculator", element.GetName());
         }
     }
 }
