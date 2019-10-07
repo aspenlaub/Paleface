@@ -79,7 +79,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface {
             var reverseSearchSpec = new WindowsElementSearchSpec(element);
             log.Add($"Checking {windowsElementSearchSpec} against {reverseSearchSpec} at depth {depth}");
             if (!string.IsNullOrWhiteSpace(windowsElementSearchSpec.ClassName) && element.GetClassName() != windowsElementSearchSpec.ClassName) {
-                log.Add($"Mismatch, class name is {element.GetClassName()}");
+                log.Add($"Mismatch, class name is {element.GetClassName() ?? "empty"}");
                 return false;
             }
 
@@ -91,14 +91,14 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface {
             }
 
             if (!string.IsNullOrWhiteSpace(windowsElementSearchSpec.Name) && element.GetName() != windowsElementSearchSpec.Name) {
-                log.Add($"Mismatch, name is {element.GetName()}");
+                log.Add($"Mismatch, name is {element.GetName() ?? "empty"}");
                 return false;
             }
 
             if (!string.IsNullOrWhiteSpace(windowsElementSearchSpec.NameContains)) {
                 var elementName = element.GetName();
                 if (elementName?.Contains(windowsElementSearchSpec.NameContains) != true) {
-                    log.Add($"Mismatch, name {element.GetName()} does not contain {windowsElementSearchSpec.NameContains}");
+                    log.Add($"Mismatch, name {element.GetName() ?? "empty"} does not contain {windowsElementSearchSpec.NameContains}");
                     return false;
                 }
             }
