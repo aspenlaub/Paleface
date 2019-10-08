@@ -33,11 +33,14 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Test {
         public void CanUseComboBox() {
             using var sut = new WindowsElement(SampleWindowExecutable, SampleWindowTitle, () => { });
 
-            var comboBox = sut.FindTextBox("SampleComboBoxAutoId");
+            var comboBox = sut.FindComboBox("SampleComboBoxAutoId", out var comboBoxElement);
             Assert.IsNotNull(comboBox);
-            Assert.AreEqual("SampleComboBoxAutoId", comboBox.AutomationId);
-            Assert.AreEqual(UiClassNames.ComboBox, comboBox.ClassName);
-            Assert.AreEqual("SampleComboBoxAutoName", comboBox.Name);
+            Assert.AreEqual("SampleComboBoxAutoId", comboBoxElement.GetAutomationId());
+            Assert.AreEqual(UiClassNames.ComboBox, comboBoxElement.GetClassName());
+            Assert.AreEqual("SampleComboBoxAutoName", comboBoxElement.GetName());
+
+            comboBox = sut.FindComboBox("SampleComboBoxAutoId");
+            Assert.IsNotNull(comboBox);
             comboBox.Clear();
             Assert.AreEqual(string.Empty, comboBox.Text);
             const string text = @"Works with a simple text, the words 'yes' and 'zero'";

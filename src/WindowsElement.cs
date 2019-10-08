@@ -55,5 +55,14 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface {
         public TextBox FindTextBox(string accessibleName) {
             return new TextBox(Session.FindElementByAccessibilityId(accessibleName));
         }
+
+        public TextBox FindComboBox(string accessibleName) {
+            return FindComboBox(accessibleName, out _);
+        }
+
+        public TextBox FindComboBox(string accessibleName, out AppiumWebElement comboBoxElement) {
+            comboBoxElement = Session.FindElementByAccessibilityId(accessibleName);
+            return new TextBox(comboBoxElement.FindElementByClassName(UiClassNames.TextBox));
+        }
     }
 }
