@@ -14,8 +14,8 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Test {
 
         [TestCleanup]
         public new void Cleanup() {
-            base.Cleanup();
             TestProcessHelper.ShutDownRunningProcesses(TestProcessHelper.ProcessType.Calculator);
+            base.Cleanup();
         }
 
         [TestMethod]
