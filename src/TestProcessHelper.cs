@@ -58,7 +58,6 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface {
             try {
                 var _ = new WindowsDriver<OpenQA.Selenium.Appium.Windows.WindowsElement>(new Uri("http://127.0.0.1:4723"), options);
             } catch (WebDriverException) {
-                throw new Exception("WinAppDriver.exe process could not be contacted");
             }
             Thread.Sleep(TimeSpan.FromSeconds(5));
             if (Process.GetProcessesByName(processName).Length != 1) {
