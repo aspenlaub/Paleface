@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Paleface {
     public class TestProcessHelper {
@@ -46,15 +47,18 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface {
                 default:
                     throw  new NotImplementedException();
             }
-            var process = new Process {
-                StartInfo = new ProcessStartInfo {
-                    FileName = executable,
-                    WindowStyle = ProcessWindowStyle.Normal,
-                    UseShellExecute = true,
-                    WorkingDirectory = Environment.SystemDirectory
-                }
-            };
-            process.Start();
+
+            Task.Run(() => {
+                var process = new Process {
+                    StartInfo = new ProcessStartInfo {
+                        FileName = executable,
+                        WindowStyle = ProcessWindowStyle.Normal,
+                        UseShellExecute = true,
+                        WorkingDirectory = Environment.SystemDirectory
+                    }
+                };
+                process.Start();
+            });
             Thread.Sleep(TimeSpan.FromSeconds(5));
             if (Process.GetProcessesByName(processName).Length != 1) {
                 throw new Exception($"{Enum.GetName(typeof(ProcessType), processType)} process could not be started");
