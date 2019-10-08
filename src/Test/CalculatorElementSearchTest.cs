@@ -4,15 +4,17 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Test {
     [TestClass]
-    public class CalculatorElementSearchTest {
-        [ClassInitialize]
-        public static void Initialize(TestContext context) {
+    public class CalculatorElementSearchTest : IsolatedTestSuite {
+        [TestInitialize]
+        public new void Initialize() {
+            base.Initialize();
             TestProcessHelper.ShutDownRunningProcesses(TestProcessHelper.ProcessType.Calculator);
             TestProcessHelper.LaunchProcess(TestProcessHelper.ProcessType.Calculator);
         }
 
-        [ClassCleanup]
-        public static void Cleanup() {
+        [TestCleanup]
+        public new void Cleanup() {
+            base.Cleanup();
             TestProcessHelper.ShutDownRunningProcesses(TestProcessHelper.ProcessType.Calculator);
         }
 

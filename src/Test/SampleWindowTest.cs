@@ -4,7 +4,7 @@ using SampleWindowResources = Aspenlaub.Net.GitHub.CSharp.Paleface.SampleWindow.
 
 namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Test {
     [TestClass]
-    public class SampleWindowTest {
+    public class SampleWindowTest : IsolatedTestSuite {
         protected static readonly string SampleWindowExecutable = typeof(SampleWindowTest).Assembly.Location
             .Replace(@"\Test\", @"\SampleWindow\")
             .Replace("Aspenlaub.Net.GitHub.CSharp.Paleface.Test.dll", @"Aspenlaub.Net.GitHub.CSharp.Paleface.SampleWindow.exe");

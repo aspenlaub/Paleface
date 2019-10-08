@@ -5,15 +5,17 @@ using OpenQA.Selenium;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Test {
     [TestClass]
-    public class FileDialogElementSearchTest {
+    public class FileDialogElementSearchTest : IsolatedTestSuite {
         [TestInitialize]
-        public void Initialize() {
+        public new void Initialize() {
+            base.Initialize();
             TestProcessHelper.ShutDownRunningProcesses(TestProcessHelper.ProcessType.WordPad);
             TestProcessHelper.LaunchProcess(TestProcessHelper.ProcessType.WordPad);
         }
 
         [TestCleanup]
-        public void Cleanup() {
+        public new void Cleanup() {
+            base.Cleanup();
             TestProcessHelper.ShutDownRunningProcesses(TestProcessHelper.ProcessType.WordPad);
         }
 
