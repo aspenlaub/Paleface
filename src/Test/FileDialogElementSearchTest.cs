@@ -33,7 +33,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Test {
             element.SendKeys(Keys.Control + 'o' + Keys.Control);
 
             windowsElementSearchSpec = WindowsElementSearchSpec.Create("", "Document - WordPad");
-            windowsChildElementSearchSpec = WindowsElementSearchSpec.Create("#32770", "Open");
+            windowsChildElementSearchSpec = WindowsElementSearchSpec.Create("", "Open");
             windowsElementSearchSpec.WindowsChildElementSearchSpecs.Add(windowsChildElementSearchSpec);
             element = sut.SearchWindowsElement(windowsElementSearchSpec, log);
             Assert.IsNotNull(element, $"File dialog not found\r\n{string.Join("\r\n", log)}");

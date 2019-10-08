@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using OpenQA.Selenium.Appium;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Paleface {
     public class WindowsElementSearchSpec {
-        public string ClassName { get; set; }
+        public List<string> ClassNames { get; set; } = new List<string>();
         public string Name { get; set; }
         public string NameContains { get; set; }
         public List<string> NameDoesNotContain { get; set; } = new List<string>();
@@ -15,17 +16,18 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface {
         }
 
         public WindowsElementSearchSpec(AppiumWebElement element) {
-            ClassName = element.GetClassName();
+            ClassNames = new List<string> { element.GetClassName() };
             Name = element.GetName();
         }
 
         public static WindowsElementSearchSpec Create(string className, string name) {
-            return new WindowsElementSearchSpec { ClassName = className, Name = name };
+            return new WindowsElementSearchSpec { ClassNames = string.IsNullOrWhiteSpace(className) ? new List<string>() : new List<string> { className }, Name = name };
         }
 
         public override string ToString() {
             var enquote = false;
-            var s = string.IsNullOrWhiteSpace(Name) ? $"Unnamed {ClassName}" : $"\"{Name}\" of class \"{ClassName}\"";
+            var formattedClassNames = string.Join("or ", ClassNames.Select(n => $"\"{n}\""));
+            var s = string.IsNullOrWhiteSpace(Name) ? $"Unnamed {formattedClassNames}" : $"\"{Name}\" of class {formattedClassNames}";
             if (!string.IsNullOrWhiteSpace(NameContains)) {
                 enquote = true;
                 s += $" with name containing \"{NameContains}\"";

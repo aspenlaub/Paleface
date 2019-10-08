@@ -34,15 +34,15 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface {
 
         protected AppiumWebElement SearchWindowsElement(WindowsDriver<AppiumWindowsElement> desktopSession, AppiumWebElement parentElement, WindowsElementSearchSpec windowsElementSearchSpec, List<string> log) {
             log.Clear();
-            List<AppiumWebElement> elements;
+            var elements = new List<AppiumWebElement>();
             if (desktopSession != null && !string.IsNullOrWhiteSpace(windowsElementSearchSpec.Name)) {
                 elements = desktopSession.FindElementsByName(windowsElementSearchSpec.Name).Cast<AppiumWebElement>().ToList();
-            } else if (desktopSession != null && !string.IsNullOrWhiteSpace(windowsElementSearchSpec.ClassName)) {
-                elements = desktopSession.FindElementsByClassName(windowsElementSearchSpec.ClassName).Cast<AppiumWebElement>().ToList();
+            } else if (desktopSession != null && windowsElementSearchSpec.ClassNames.Any()) {
+                windowsElementSearchSpec.ClassNames.ForEach(n => elements.AddRange(desktopSession.FindElementsByClassName(n)));
             } else if (!string.IsNullOrWhiteSpace(windowsElementSearchSpec.Name)) {
                 elements = parentElement.FindElementsByName(windowsElementSearchSpec.Name).ToList();
-            } else if (!string.IsNullOrWhiteSpace(windowsElementSearchSpec.ClassName)) {
-                elements = parentElement.FindElementsByClassName(windowsElementSearchSpec.ClassName).ToList();
+            } else if (windowsElementSearchSpec.ClassNames.Any()) {
+                windowsElementSearchSpec.ClassNames.ForEach(n => elements.AddRange(parentElement.FindElementsByClassName(n)));
             } else {
                 throw new ArgumentException($"Invalid {nameof(WindowsElementSearchSpec)}, name or class name is required");
             }
@@ -78,7 +78,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface {
 
             var reverseSearchSpec = new WindowsElementSearchSpec(element);
             log.Add($"Checking {windowsElementSearchSpec} against {reverseSearchSpec} at depth {depth}");
-            if (!string.IsNullOrWhiteSpace(windowsElementSearchSpec.ClassName) && element.GetClassName() != windowsElementSearchSpec.ClassName) {
+            if (windowsElementSearchSpec.ClassNames.Any() && !windowsElementSearchSpec.ClassNames.Contains(element.GetClassName())) {
                 log.Add($"Mismatch, class name is {element.GetClassName() ?? "empty"}");
                 return false;
             }
@@ -111,11 +111,11 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface {
             log.Add($"Element is indeed {windowsElementSearchSpec}, checking child search specifications");
             if (!windowsElementSearchSpec.WindowsChildElementSearchSpecs.All(
                     spec => {
-                        List<AppiumWebElement> elements;
+                        var elements = new List<AppiumWebElement>();
                         if (!string.IsNullOrWhiteSpace(spec.Name)) {
                             elements = element.FindElementsByName(spec.Name).ToList();
-                        } else if (!string.IsNullOrWhiteSpace(windowsElementSearchSpec.ClassName)) {
-                            elements = element.FindElementsByClassName(spec.ClassName).ToList();
+                        } else if (spec.ClassNames.Any()) {
+                            spec.ClassNames.ForEach(n => elements.AddRange(element.FindElementsByClassName(n)));
                         } else {
                             throw new ArgumentException($"Invalid {nameof(WindowsElementSearchSpec)}, name or class name is required");
                         }
