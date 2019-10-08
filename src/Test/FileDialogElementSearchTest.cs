@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OpenQA.Selenium;
 
@@ -13,7 +11,6 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Test {
             base.Initialize();
             TestProcessHelper.ShutDownRunningProcesses(TestProcessHelper.ProcessType.WordPad);
             TestProcessHelper.LaunchProcess(TestProcessHelper.ProcessType.WordPad);
-            Thread.Sleep(TimeSpan.FromSeconds(10));
         }
 
         [TestCleanup]
