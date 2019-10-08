@@ -50,6 +50,8 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface {
                     throw  new NotImplementedException();
             }
 
+            AppiumHelper.LaunchWinAppDriverIfNecessary();
+
             var options = new AppiumOptions();
             options.AddAdditionalCapability("app", executable);
             options.AddAdditionalCapability("unicodeKeyboard", true);
