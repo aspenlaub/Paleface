@@ -15,7 +15,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Test {
 
         [TestCleanup]
         public new void Cleanup() {
-            // TestProcessHelper.ShutDownRunningProcesses(TestProcessHelper.ProcessType.WordPad);
+            TestProcessHelper.ShutDownRunningProcesses(TestProcessHelper.ProcessType.WordPad);
             base.Cleanup();
         }
 
