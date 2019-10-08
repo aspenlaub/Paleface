@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading;
 
@@ -41,7 +42,11 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface {
                     executable = "calc.exe";
                     break;
                 case ProcessType.WordPad:
-                    executable = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles) + @"\Windows NT\Accessories\wordpad.exe";
+                    executable = Path.GetTempPath() + @"\wordpad.cmd";
+                    const string wordpadCommand = @"start wordpad.exe";
+                    if (!File.Exists(executable) || wordpadCommand != File.ReadAllText(executable)) {
+                        File.WriteAllText(executable, wordpadCommand);
+                    }
                     break;
                 default:
                     throw  new NotImplementedException();
@@ -51,7 +56,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface {
                 StartInfo = new ProcessStartInfo {
                     FileName = executable,
                     WindowStyle = ProcessWindowStyle.Normal,
-                    UseShellExecute = false,
+                    UseShellExecute = true,
                     WorkingDirectory = Environment.SystemDirectory
                 }
             };
