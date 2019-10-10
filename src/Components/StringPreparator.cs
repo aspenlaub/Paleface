@@ -1,11 +1,12 @@
-﻿using OpenQA.Selenium;
+﻿using Aspenlaub.Net.GitHub.CSharp.Paleface.Interfaces;
+using OpenQA.Selenium;
 
-namespace Aspenlaub.Net.GitHub.CSharp.Paleface {
-    public static class StringPreparator {
+namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Components {
+    public class StringPreparator : IStringPreparator {
 
         private const string CharactersNotRequiringPreparation = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXabcdefghijklmnopqrstuvwx ";
 
-        public static string PrepareStringForInput(string s) {
+        public string PrepareStringForInput(string s) {
             var r = "";
             foreach (var c in s) {
                 if (CharactersNotRequiringPreparation.Contains(c.ToString())) {

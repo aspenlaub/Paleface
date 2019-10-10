@@ -1,17 +1,27 @@
 ﻿using System;
 using System.IO;
+using Aspenlaub.Net.GitHub.CSharp.Paleface.Helpers;
+using Aspenlaub.Net.GitHub.CSharp.Paleface.Interfaces;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Appium;
 using OpenQA.Selenium.Appium.Windows;
 using AppiumWindowsElement = OpenQA.Selenium.Appium.Windows.WindowsElement;
 
-namespace Aspenlaub.Net.GitHub.CSharp.Paleface {
-    public class WindowsElement : IDisposable {
+namespace Aspenlaub.Net.GitHub.CSharp.Paleface.GUI {
+    public class AppiumSession : IAppiumSession {
         public WindowsDriver<AppiumWindowsElement> Session { get; private set; }
+
+        protected readonly IStringPreparator StringPreparator;
+        protected readonly ITextBoxFactory TextBoxFactory;
 
         protected Action DismissPromptsOnClosing;
 
-        public WindowsElement(string executableOrRunningApplication, string expectedTitle, Action dismissPromptsOnClosing) {
+        public AppiumSession(IStringPreparator stringPreparator, ITextBoxFactory textBoxFactory) {
+            StringPreparator = stringPreparator;
+            TextBoxFactory = textBoxFactory;
+        }
+
+        public void Initialize(string executableOrRunningApplication, string expectedTitle, Action dismissPromptsOnClosing) {
             AppiumHelper.LaunchWinAppDriverIfNecessary();
 
             var options = new AppiumOptions();
@@ -52,17 +62,29 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface {
             Session = null;
         }
 
-        public TextBox FindTextBox(string accessibleName) {
-            return new TextBox(Session.FindElementByAccessibilityId(accessibleName));
+        public ITextBox FindTextBox(string accessibleName) {
+            if (Session == null) {
+                throw new Exception($"Please call method {nameof(Initialize)}, first");
+            }
+
+            return TextBoxFactory.Create(Session.FindElementByAccessibilityId(accessibleName));
         }
 
-        public TextBox FindComboBox(string accessibleName) {
+        public ITextBox FindComboBox(string accessibleName) {
+            if (Session == null) {
+                throw new Exception($"Please call method {nameof(Initialize)}, first");
+            }
+
             return FindComboBox(accessibleName, out _);
         }
 
-        public TextBox FindComboBox(string accessibleName, out AppiumWebElement comboBoxElement) {
+        public ITextBox FindComboBox(string accessibleName, out AppiumWebElement comboBoxElement) {
+            if (Session == null) {
+                throw new Exception($"Please call method {nameof(Initialize)}, first");
+            }
+
             comboBoxElement = Session.FindElementByAccessibilityId(accessibleName);
-            return new TextBox(comboBoxElement.FindElementByClassName(UiClassNames.TextBox));
+            return TextBoxFactory.Create(comboBoxElement.FindElementByClassName(UiClassNames.TextBox));
         }
     }
 }

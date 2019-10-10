@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Aspenlaub.Net.GitHub.CSharp.Paleface.Extensions;
 using OpenQA.Selenium.Appium;
 
-namespace Aspenlaub.Net.GitHub.CSharp.Paleface {
+namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Entities {
     public class WindowsElementSearchSpec {
         public List<string> ClassNames { get; set; } = new List<string>();
         public string Name { get; set; }

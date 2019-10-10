@@ -1,4 +1,8 @@
 ﻿using System.IO;
+using Aspenlaub.Net.GitHub.CSharp.Paleface.Components;
+using Aspenlaub.Net.GitHub.CSharp.Paleface.Extensions;
+using Aspenlaub.Net.GitHub.CSharp.Paleface.Interfaces;
+using Autofac;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SampleWindowResources = Aspenlaub.Net.GitHub.CSharp.Paleface.SampleWindow.Properties.Resources;
 
@@ -8,11 +12,20 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Test {
         protected static readonly string SampleWindowExecutable = typeof(SampleWindowTest).Assembly.Location
             .Replace(@"\Test\", @"\SampleWindow\")
             .Replace("Aspenlaub.Net.GitHub.CSharp.Paleface.Test.dll", @"Aspenlaub.Net.GitHub.CSharp.Paleface.SampleWindow.exe");
+
         protected static readonly string SampleWindowTitle = SampleWindowResources.WindowTitle;
+
+        private readonly IContainer vContainer;
+
+        public SampleWindowTest() {
+            var builder = new ContainerBuilder().UsePaleface();
+            vContainer = builder.Build();
+        }
 
         [TestMethod]
         public void CanUseTextBox() {
-            using var sut = new WindowsElement(SampleWindowExecutable, SampleWindowTitle, () => {});
+            using var sut = vContainer.Resolve<IAppiumSession>();
+            sut.Initialize(SampleWindowExecutable, SampleWindowTitle, () => {});
 
             var textBox = sut.FindTextBox("SampleTextBoxAutoId");
             Assert.IsNotNull(textBox);
@@ -31,7 +44,8 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Test {
 
         [TestMethod]
         public void CanUseComboBox() {
-            using var sut = new WindowsElement(SampleWindowExecutable, SampleWindowTitle, () => { });
+            using var sut = vContainer.Resolve<IAppiumSession>();
+            sut.Initialize(SampleWindowExecutable, SampleWindowTitle, () => { });
 
             var comboBox = sut.FindComboBox("SampleComboBoxAutoId", out var comboBoxElement);
             Assert.IsNotNull(comboBox);

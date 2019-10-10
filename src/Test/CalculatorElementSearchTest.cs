@@ -1,10 +1,23 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Aspenlaub.Net.GitHub.CSharp.Paleface.Components;
+using Aspenlaub.Net.GitHub.CSharp.Paleface.Entities;
+using Aspenlaub.Net.GitHub.CSharp.Paleface.Extensions;
+using Aspenlaub.Net.GitHub.CSharp.Paleface.Helpers;
+using Aspenlaub.Net.GitHub.CSharp.Paleface.Interfaces;
+using Autofac;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Test {
     [TestClass]
     public class CalculatorElementSearchTest : IsolatedTestSuite {
+        private readonly IContainer vContainer;
+
+        public CalculatorElementSearchTest() {
+            var builder = new ContainerBuilder().UsePaleface();
+            vContainer = builder.Build();
+        }
+
         [TestInitialize]
         public new void Initialize() {
             base.Initialize();
@@ -25,7 +38,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Test {
             windowsElementSearchSpec.WindowsChildElementSearchSpecs.Add(windowsChildElementSearchSpec);
             windowsChildElementSearchSpec.WindowsChildElementSearchSpecs.Add(WindowsElementSearchSpec.Create(UiClassNames.Button, "Square root"));
             windowsChildElementSearchSpec.WindowsChildElementSearchSpecs.Add(WindowsElementSearchSpec.Create(UiClassNames.Button, "Cube"));
-            var sut = new WindowsElementSearcher();
+            var sut = vContainer.Resolve<IWindowsElementSearcher>();
             var log = new List<string>();
             var element = sut.SearchWindowsElement(windowsElementSearchSpec, log);
             Assert.IsNotNull(element);
@@ -40,7 +53,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Test {
         public void CannotFindShutDownCalculator() {
             TestProcessHelper.ShutDownRunningProcesses(TestProcessHelper.ProcessType.Calculator);
             var windowsElementSearchSpec = WindowsElementSearchSpec.Create(UiClassNames.ApplicationFrameWindow, "Calculator");
-            var sut = new WindowsElementSearcher();
+            var sut = vContainer.Resolve<IWindowsElementSearcher>();
             var log = new List<string>();
             var element = sut.SearchWindowsElement(windowsElementSearchSpec, log);
             Assert.IsNull(element);
@@ -54,7 +67,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Test {
         public void CanUseOptionalSearchCriteria() {
             var windowsElementSearchSpec = WindowsElementSearchSpec.Create("", "Desktop 1");
             windowsElementSearchSpec.NameMustNotBeEmpty = true;
-            var sut = new WindowsElementSearcher();
+            var sut = vContainer.Resolve<IWindowsElementSearcher>();
             var log = new List<string>();
             var element = sut.SearchWindowsElement(windowsElementSearchSpec, log);
             Assert.IsNotNull(element);
@@ -70,7 +83,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Test {
             var windowsElementSearchSpec = WindowsElementSearchSpec.Create(UiClassNames.Button, "");
             windowsElementSearchSpec.NameMustNotBeEmpty = true;
             windowsElementSearchSpec.NameDoesNotContain = new List<string> { "User Notifications Indicator", "Open Navigation" , "Keep on top", "Minimize", "Restore", "Close" };
-            var sut = new WindowsElementSearcher();
+            var sut = vContainer.Resolve<IWindowsElementSearcher>();
             var log = new List<string>();
             var element = sut.SearchWindowsElement(windowsElementSearchSpec, log);
             Assert.IsNotNull(element);
@@ -82,7 +95,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Test {
         public void CanUseNameContainsCriteria() {
             var windowsElementSearchSpec = WindowsElementSearchSpec.Create(UiClassNames.ApplicationFrameWindow, "Calculator");
             windowsElementSearchSpec.NameContains = "Calculator";
-            var sut = new WindowsElementSearcher();
+            var sut = vContainer.Resolve<IWindowsElementSearcher>();
             var log = new List<string>();
             var element = sut.SearchWindowsElement(windowsElementSearchSpec, log);
             Assert.IsNotNull(element);

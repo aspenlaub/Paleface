@@ -6,8 +6,8 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Appium;
 using OpenQA.Selenium.Appium.Windows;
 
-namespace Aspenlaub.Net.GitHub.CSharp.Paleface {
-    public class TestProcessHelper {
+namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Helpers {
+    public static class TestProcessHelper {
         public enum ProcessType {
             Calculator,
             WordPad
@@ -58,7 +58,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface {
             options.AddAdditionalCapability("platform", "Windows");
 
             try {
-                var _ = new WindowsDriver<OpenQA.Selenium.Appium.Windows.WindowsElement>(new Uri("http://127.0.0.1:4723"), options);
+                var _ = new WindowsDriver<WindowsElement>(new Uri("http://127.0.0.1:4723"), options);
             } catch (WebDriverException) {
             }
             Thread.Sleep(TimeSpan.FromSeconds(5));

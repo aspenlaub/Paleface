@@ -1,11 +1,23 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using Aspenlaub.Net.GitHub.CSharp.Paleface.Components;
+using Aspenlaub.Net.GitHub.CSharp.Paleface.Entities;
+using Aspenlaub.Net.GitHub.CSharp.Paleface.Helpers;
+using Aspenlaub.Net.GitHub.CSharp.Paleface.Interfaces;
+using Autofac;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OpenQA.Selenium;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Test {
     [TestClass]
     public class FileDialogElementSearchTest : IsolatedTestSuite {
+        private readonly IContainer vContainer;
+
+        public FileDialogElementSearchTest() {
+            var builder = new ContainerBuilder().UsePaleface();
+            vContainer = builder.Build();
+        }
+
         [TestInitialize]
         public new void Initialize() {
             base.Initialize();
@@ -21,7 +33,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Test {
 
         [TestMethod]
         public void CanUseFileDialog() {
-            var sut = new WindowsElementSearcher();
+            var sut = vContainer.Resolve<IWindowsElementSearcher>();
 
             var windowsElementSearchSpec = WindowsElementSearchSpec.Create("", "Document - WordPad");
             var windowsChildElementSearchSpec = WindowsElementSearchSpec.Create("", "Rich Text Window");
@@ -41,7 +53,8 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Test {
             element = sut.SearchWindowsElement(element, WindowsElementSearchSpec.Create(UiClassNames.Edit , "File name:"), log);
             Assert.IsNotNull(element, $"File name not found\r\n{string.Join("\r\n", log)}");
 
-            var comboTextBox = new TextBox(element);
+            var comboTextBox = vContainer.Resolve<ITextBoxFactory>().Create(element);
+
             var fileName = Path.GetTempPath() + @"\TextFile.txt";
             comboTextBox.Text = fileName;
             Assert.AreEqual(fileName, comboTextBox.Text);

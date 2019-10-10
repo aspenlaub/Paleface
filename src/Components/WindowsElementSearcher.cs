@@ -1,13 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Aspenlaub.Net.GitHub.CSharp.Paleface.Entities;
+using Aspenlaub.Net.GitHub.CSharp.Paleface.Extensions;
+using Aspenlaub.Net.GitHub.CSharp.Paleface.Helpers;
+using Aspenlaub.Net.GitHub.CSharp.Paleface.Interfaces;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Appium;
 using OpenQA.Selenium.Appium.Windows;
 using AppiumWindowsElement = OpenQA.Selenium.Appium.Windows.WindowsElement;
 
-namespace Aspenlaub.Net.GitHub.CSharp.Paleface {
-    public class WindowsElementSearcher {
+namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Components {
+    public class WindowsElementSearcher : IWindowsElementSearcher {
         public AppiumWebElement SearchWindowsElement(WindowsElementSearchSpec windowsElementSearchSpec) {
             return SearchWindowsElement(windowsElementSearchSpec, new List<string>());
         }

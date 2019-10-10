@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading;
 
-namespace Aspenlaub.Net.GitHub.CSharp.Paleface {
+namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Helpers {
     internal static class AppiumHelper {
         internal static void LaunchWinAppDriverIfNecessary() {
             if (Process.GetProcessesByName("WinAppDriver").Length != 0) {
