@@ -25,7 +25,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Test {
         [TestMethod]
         public void CanUseTextBox() {
             using var sut = vContainer.Resolve<IAppiumSession>();
-            sut.Initialize(SampleWindowExecutable, SampleWindowTitle, () => {});
+            sut.Initialize(SampleWindowExecutable, SampleWindowTitle, () => {}, 2);
 
             var textBox = sut.FindTextBox("SampleTextBoxAutoId");
             Assert.IsNotNull(textBox);
@@ -45,7 +45,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Test {
         [TestMethod]
         public void CanUseComboBox() {
             using var sut = vContainer.Resolve<IAppiumSession>();
-            sut.Initialize(SampleWindowExecutable, SampleWindowTitle, () => { });
+            sut.Initialize(SampleWindowExecutable, SampleWindowTitle, () => { }, 2);
 
             var comboBox = sut.FindComboBox("SampleComboBoxAutoId", out var comboBoxElement);
             Assert.IsNotNull(comboBox);

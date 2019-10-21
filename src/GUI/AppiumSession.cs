@@ -21,7 +21,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface.GUI {
             TextBoxFactory = textBoxFactory;
         }
 
-        public void Initialize(string executableOrRunningApplication, string expectedTitle, Action dismissPromptsOnClosing) {
+        public void Initialize(string executableOrRunningApplication, string expectedTitle, Action dismissPromptsOnClosing, int implicitSecondsUntilTimeOut) {
             AppiumHelper.LaunchWinAppDriverIfNecessary();
 
             var options = new AppiumOptions();
@@ -45,7 +45,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface.GUI {
             if (Session.Title != expectedTitle) {
                 throw new Exception($"Title '{expectedTitle}' was expected, but it is '{Session.Title}'");
             }
-            Session.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(1.5);
+            Session.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(implicitSecondsUntilTimeOut);
             DismissPromptsOnClosing = dismissPromptsOnClosing;
         }
 

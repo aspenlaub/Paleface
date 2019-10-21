@@ -26,6 +26,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface.GUI {
         }
 
         public void Clear() {
+            EditableElement.SendKeys("");
             EditableElement.SendKeys(Keys.Control + "a" + Keys.Control);
             EditableElement.SendKeys(Keys.Delete);
         }
