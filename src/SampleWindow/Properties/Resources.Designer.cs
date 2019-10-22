@@ -8,6 +8,9 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using System.Runtime.CompilerServices;
+
+[assembly: InternalsVisibleTo("Aspenlaub.Net.GitHub.CSharp.Paleface.Test")]
 namespace Aspenlaub.Net.GitHub.CSharp.Paleface.SampleWindow.Properties {
     using System;
     
