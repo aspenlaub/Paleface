@@ -1,4 +1,5 @@
-﻿using Aspenlaub.Net.GitHub.CSharp.Paleface.Extensions;
+﻿using System;
+using Aspenlaub.Net.GitHub.CSharp.Paleface.Extensions;
 using Aspenlaub.Net.GitHub.CSharp.Paleface.Interfaces;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Appium;
@@ -8,9 +9,11 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface.GUI {
         public AppiumWebElement EditableElement { get; set; }
 
         protected readonly IStringPreparator StringPreparator;
+        protected readonly ITextBoxServices TextBoxServices;
 
-        public TextBox(IStringPreparator stringPreparator) {
+        public TextBox(IStringPreparator stringPreparator, ITextBoxServices textBoxServices) {
             StringPreparator = stringPreparator;
+            TextBoxServices = textBoxServices;
         }
 
         public string AutomationId => EditableElement.GetAutomationId();
@@ -19,9 +22,18 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface.GUI {
 
         public string Text {
             get => EditableElement.Text;
-            set {
+            set => SetText(value, true);
+        }
+
+        public void SetText(string s, bool useCopyPaste) {
+            if (useCopyPaste) {
+                if (!TextBoxServices.FindClipboardHelperWindowEnterTextAndCopy(s, out var log)) {
+                    throw new Exception($"Failed to enter text and copy\r\n{string.Join("\r\n", log)}");
+                }
+                PasteFromClipboard();
+            } else {
                 Clear();
-                EditableElement.SendKeys(StringPreparator.PrepareStringForInput(value));
+                EditableElement.SendKeys(StringPreparator.PrepareStringForInput(s));
             }
         }
 
@@ -29,6 +41,17 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface.GUI {
             EditableElement.SendKeys("");
             EditableElement.SendKeys(Keys.Control + "a" + Keys.Control);
             EditableElement.SendKeys(Keys.Delete);
+        }
+
+        public void CopyToClipboard() {
+            EditableElement.SendKeys("");
+            EditableElement.SendKeys(Keys.Control + "a" + Keys.Control);
+            EditableElement.SendKeys(Keys.Control + "c" + Keys.Control);
+        }
+
+        public void PasteFromClipboard() {
+            Clear();
+            EditableElement.SendKeys(Keys.Control + "v" + Keys.Control);
         }
     }
 }

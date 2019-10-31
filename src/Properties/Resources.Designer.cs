@@ -8,6 +8,8 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using System.Runtime.CompilerServices;
+
 namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Properties {
     using System;
     
@@ -57,6 +59,15 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Properties {
             }
             set {
                 resourceCulture = value;
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Paleface Clipboard Helper Window.
+        /// </summary>
+        internal static string WindowTitle {
+            get {
+                return ResourceManager.GetString("WindowTitle", resourceCulture);
             }
         }
     }

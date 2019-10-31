@@ -12,13 +12,13 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface.GUI {
         public WindowsDriver<AppiumWindowsElement> Session { get; private set; }
 
         protected readonly IStringPreparator StringPreparator;
-        protected readonly ITextBoxFactory TextBoxFactory;
+        protected readonly ITextBoxServices TextBoxServices;
 
         protected Action DismissPromptsOnClosing;
 
-        public AppiumSession(IStringPreparator stringPreparator, ITextBoxFactory textBoxFactory) {
+        public AppiumSession(IStringPreparator stringPreparator, ITextBoxServices textBoxServices) {
             StringPreparator = stringPreparator;
-            TextBoxFactory = textBoxFactory;
+            TextBoxServices = textBoxServices;
         }
 
         public void Initialize(string executableOrRunningApplication, string expectedTitle, Action dismissPromptsOnClosing, int implicitSecondsUntilTimeOut) {
@@ -67,7 +67,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface.GUI {
                 throw new Exception($"Please call method {nameof(Initialize)}, first");
             }
 
-            return TextBoxFactory.Create(Session.FindElementByAccessibilityId(accessibleName));
+            return TextBoxServices.Create(Session.FindElementByAccessibilityId(accessibleName));
         }
 
         public ITextBox FindComboBox(string accessibleName) {
@@ -84,7 +84,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface.GUI {
             }
 
             comboBoxElement = Session.FindElementByAccessibilityId(accessibleName);
-            return TextBoxFactory.Create(comboBoxElement.FindElementByClassName(UiClassNames.TextBox));
+            return TextBoxServices.Create(comboBoxElement.FindElementByClassName(UiClassNames.TextBox));
         }
     }
 }

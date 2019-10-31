@@ -16,7 +16,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Components {
             return SearchWindowsElement(windowsElementSearchSpec, new List<string>());
         }
 
-        public AppiumWebElement SearchWindowsElement(WindowsElementSearchSpec windowsElementSearchSpec, List<string> log) {
+        public AppiumWebElement SearchWindowsElement(WindowsElementSearchSpec windowsElementSearchSpec, IList<string> log) {
             AppiumHelper.LaunchWinAppDriverIfNecessary();
 
             var options = new AppiumOptions();
@@ -32,11 +32,11 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Components {
             return SearchWindowsElement(desktopSession, null, windowsElementSearchSpec, log);
         }
 
-        public AppiumWebElement SearchWindowsElement(AppiumWebElement parentElement, WindowsElementSearchSpec windowsElementSearchSpec, List<string> log) {
+        public AppiumWebElement SearchWindowsElement(AppiumWebElement parentElement, WindowsElementSearchSpec windowsElementSearchSpec, IList<string> log) {
             return SearchWindowsElement(null, parentElement, windowsElementSearchSpec, log);
         }
 
-        protected AppiumWebElement SearchWindowsElement(WindowsDriver<AppiumWindowsElement> desktopSession, AppiumWebElement parentElement, WindowsElementSearchSpec windowsElementSearchSpec, List<string> log) {
+        protected AppiumWebElement SearchWindowsElement(WindowsDriver<AppiumWindowsElement> desktopSession, AppiumWebElement parentElement, WindowsElementSearchSpec windowsElementSearchSpec, IList<string> log) {
             log.Clear();
             var elements = new List<AppiumWebElement>();
             if (desktopSession != null && !string.IsNullOrWhiteSpace(windowsElementSearchSpec.Name)) {

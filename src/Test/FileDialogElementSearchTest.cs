@@ -23,11 +23,14 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Test {
             base.Initialize();
             TestProcessHelper.ShutDownRunningProcesses(TestProcessHelper.ProcessType.WordPad);
             TestProcessHelper.LaunchProcess(TestProcessHelper.ProcessType.WordPad);
+            TestProcessHelper.ShutDownRunningProcesses(TestProcessHelper.ProcessType.Paleface);
+            TestProcessHelper.LaunchProcess(TestProcessHelper.ProcessType.Paleface);
         }
 
         [TestCleanup]
         public new void Cleanup() {
             TestProcessHelper.ShutDownRunningProcesses(TestProcessHelper.ProcessType.WordPad);
+            TestProcessHelper.ShutDownRunningProcesses(TestProcessHelper.ProcessType.Paleface);
             base.Cleanup();
         }
 
@@ -53,11 +56,11 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Test {
             element = sut.SearchWindowsElement(element, WindowsElementSearchSpec.Create(UiClassNames.Edit , "File name:"), log);
             Assert.IsNotNull(element, $"File name not found\r\n{string.Join("\r\n", log)}");
 
-            var comboTextBox = vContainer.Resolve<ITextBoxFactory>().Create(element);
+            var comboBox = vContainer.Resolve<ITextBoxServices>().Create(element);
 
             var fileName = Path.GetTempPath() + @"\TextFile.txt";
-            comboTextBox.Text = fileName;
-            Assert.AreEqual(fileName, comboTextBox.Text);
+            comboBox.Text = fileName;
+            Assert.AreEqual(fileName, comboBox.Text);
         }
     }
 }

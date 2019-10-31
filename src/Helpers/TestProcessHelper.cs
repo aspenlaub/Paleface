@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
+using Aspenlaub.Net.GitHub.CSharp.Paleface.GUI;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Appium;
 using OpenQA.Selenium.Appium.Windows;
@@ -10,11 +11,18 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Helpers {
     public static class TestProcessHelper {
         public enum ProcessType {
             Calculator,
-            WordPad
+            WordPad,
+            Paleface
         }
 
+        private static readonly string ClipboardHelperWindowExecutable = typeof(ClipboardHelperWindow).Assembly.Location
+            .Replace(@"\Test\", @"\")
+            .Replace(".dll", @".exe");
+
         private static string ProcessName(ProcessType processType) {
-            return Enum.GetName(typeof(ProcessType), processType)?.ToLower();
+            return processType == ProcessType.Paleface
+                ? "Aspenlaub.Net.GitHub.CSharp.Paleface"
+                : Enum.GetName(typeof(ProcessType), processType)?.ToLower();
         }
 
         public static void ShutDownRunningProcesses(ProcessType processType) {
@@ -37,7 +45,6 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Helpers {
         }
 
         public static void LaunchProcess(ProcessType processType) {
-            var processName = ProcessName(processType);
             string executable;
             switch (processType) {
                 case ProcessType.Calculator:
@@ -45,6 +52,9 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Helpers {
                     break;
                 case ProcessType.WordPad:
                     executable = "wordpad.exe";
+                    break;
+                case ProcessType.Paleface:
+                    executable = ClipboardHelperWindowExecutable;
                     break;
                 default:
                     throw  new NotImplementedException();
@@ -62,9 +72,14 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Helpers {
             } catch (WebDriverException) {
             }
             Thread.Sleep(TimeSpan.FromSeconds(5));
-            if (Process.GetProcessesByName(processName).Length != 1) {
+            if (!IsProcessRunning(processType)) {
                 throw new Exception($"{Enum.GetName(typeof(ProcessType), processType)} process could not be started");
             }
+        }
+
+        public static bool IsProcessRunning(ProcessType processType) {
+            var processName = ProcessName(processType);
+            return Process.GetProcessesByName(processName).Length == 1;
         }
     }
 }

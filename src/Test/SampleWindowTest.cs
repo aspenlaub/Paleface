@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using Aspenlaub.Net.GitHub.CSharp.Paleface.Components;
 using Aspenlaub.Net.GitHub.CSharp.Paleface.Extensions;
+using Aspenlaub.Net.GitHub.CSharp.Paleface.Helpers;
 using Aspenlaub.Net.GitHub.CSharp.Paleface.Interfaces;
 using Autofac;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -20,6 +21,19 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Test {
         public SampleWindowTest() {
             var builder = new ContainerBuilder().UsePaleface();
             vContainer = builder.Build();
+        }
+
+        [TestInitialize]
+        public new void Initialize() {
+            base.Initialize();
+            TestProcessHelper.ShutDownRunningProcesses(TestProcessHelper.ProcessType.Paleface);
+            TestProcessHelper.LaunchProcess(TestProcessHelper.ProcessType.Paleface);
+        }
+
+        [TestCleanup]
+        public new void Cleanup() {
+            TestProcessHelper.ShutDownRunningProcesses(TestProcessHelper.ProcessType.Paleface);
+            base.Cleanup();
         }
 
         [TestMethod]
