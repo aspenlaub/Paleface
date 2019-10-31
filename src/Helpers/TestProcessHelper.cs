@@ -1,8 +1,13 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using Aspenlaub.Net.GitHub.CSharp.Paleface.GUI;
+using Aspenlaub.Net.GitHub.CSharp.Pegh.Components;
+using Aspenlaub.Net.GitHub.CSharp.Pegh.Entities;
+using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
+using Autofac;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Appium;
 using OpenQA.Selenium.Appium.Windows;
@@ -55,6 +60,19 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Helpers {
                     break;
                 case ProcessType.Paleface:
                     executable = ClipboardHelperWindowExecutable;
+                    if (!File.Exists(executable)) {
+                        var container = new ContainerBuilder().UsePegh(new DummyCsArgumentPrompter()).Build();
+                        const string folderName = @"$(GitHub)\PalefaceBin\Release";
+                        var errorsAndInfos = new ErrorsAndInfos();
+                        var folder = container.Resolve<IFolderResolver>().Resolve(folderName, errorsAndInfos);
+                        if (!errorsAndInfos.AnyErrors()) {
+                            executable = folder.FullName + @"\Aspenlaub.Net.GitHub.CSharp.Paleface.exe";
+                            if (!File.Exists(executable)) {
+                                throw new Exception($"{Enum.GetName(typeof(ProcessType), processType)} process could not be started");
+                            }
+                        }
+
+                    }
                     break;
                 default:
                     throw  new NotImplementedException();
