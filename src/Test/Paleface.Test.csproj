@@ -17,7 +17,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" />
   <ItemGroup>
-    <PackageReference Include="Appium.WebDriver" Version="4.1.0" />
+    <PackageReference Include="Appium.WebDriver" Version="4.1.1" />
     <PackageReference Include="Autofac" Version="4.9.4" />
     <PackageReference Include="coverlet.collector" Version="1.1.0">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
