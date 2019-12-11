@@ -16,6 +16,9 @@
     <Version>2.0.$(VersionDays).$(VersionMinutes)</Version>
     <ApplicationIcon>GUI\aspenlaub.ico</ApplicationIcon>
     <StartupObject>Aspenlaub.Net.GitHub.CSharp.Paleface.GUI.App</StartupObject>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/aspenlaub/Paleface.git</RepositoryUrl>
+    <RepositoryBranch>master</RepositoryBranch>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
