@@ -37,7 +37,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Test {
             var windowsChildElementSearchSpec = WindowsElementSearchSpec.Create(UiClassNames.NamedContainerAutomationPeer, "Standard functions");
             windowsElementSearchSpec.WindowsChildElementSearchSpecs.Add(windowsChildElementSearchSpec);
             windowsChildElementSearchSpec.WindowsChildElementSearchSpecs.Add(WindowsElementSearchSpec.Create(UiClassNames.Button, "Square root"));
-            windowsChildElementSearchSpec.WindowsChildElementSearchSpecs.Add(WindowsElementSearchSpec.Create(UiClassNames.Button, "Cube"));
+            windowsChildElementSearchSpec.WindowsChildElementSearchSpecs.Add(WindowsElementSearchSpec.Create(UiClassNames.Button, "Reciprocal"));
             var sut = vContainer.Resolve<IWindowsElementSearcher>();
             var log = new List<string>();
             var element = sut.SearchWindowsElement(windowsElementSearchSpec, log);
