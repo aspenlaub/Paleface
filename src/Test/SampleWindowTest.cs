@@ -78,5 +78,23 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Test {
             comboBox.Text = fileName;
             Assert.AreEqual(fileName, comboBox.Text);
         }
+
+        [TestMethod]
+        public void CanUseButton() {
+            using var sut = vContainer.Resolve<IAppiumSession>();
+            sut.Initialize(SampleWindowExecutable, SampleWindowTitle, () => { }, 2);
+
+            var textBox = sut.FindTextBox("SampleTextBoxAutoId");
+            Assert.IsNotNull(textBox);
+            var button = sut.FindButton("SampleSayHelloWorldButtonAutoId");
+            Assert.IsNotNull(button);
+            Assert.AreEqual("SampleSayHelloWorldButtonAutoId", button.AutomationId);
+            Assert.AreEqual(UiClassNames.Button, button.ClassName);
+            Assert.AreEqual("SampleSayHelloWorldButtonAutoName", button.Name);
+            textBox.Clear();
+            Assert.AreEqual(string.Empty, textBox.Text);
+            button.Click();
+            Assert.AreEqual("Hello World", textBox.Text);
+        }
     }
 }

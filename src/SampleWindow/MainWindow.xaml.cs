@@ -1,4 +1,6 @@
-﻿namespace Aspenlaub.Net.GitHub.CSharp.Paleface.SampleWindow {
+﻿using System.Windows;
+
+namespace Aspenlaub.Net.GitHub.CSharp.Paleface.SampleWindow {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
@@ -7,6 +9,10 @@
         public MainWindow() {
             InitializeComponent();
             Title = Properties.Resources.WindowTitle;
+        }
+
+        private void SampleSayHelloWorldButton_OnClick(object sender, RoutedEventArgs e) {
+            SampleTextBox.Text = SampleTextBox.Text == "Hello World" ? "I Already Said Hello" : "Hello World";
         }
     }
 }

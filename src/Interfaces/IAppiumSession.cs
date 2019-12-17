@@ -7,5 +7,6 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Interfaces {
         ITextBox FindTextBox(string accessibleName);
         ITextBox FindComboBox(string accessibleName);
         ITextBox FindComboBox(string accessibleName, out AppiumWebElement comboBoxElement);
+        IButton FindButton(string accessibleName);
     }
 }

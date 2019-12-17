@@ -1,13 +1,9 @@
 ﻿using System;
-using Aspenlaub.Net.GitHub.CSharp.Paleface.Extensions;
 using Aspenlaub.Net.GitHub.CSharp.Paleface.Interfaces;
 using OpenQA.Selenium;
-using OpenQA.Selenium.Appium;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Paleface.GUI {
-    public class TextBox : ITextBox {
-        public AppiumWebElement EditableElement { get; set; }
-
+    public class TextBox : ControlWithSingleEditableElement, ITextBox {
         protected readonly IStringPreparator StringPreparator;
         protected readonly ITextBoxServices TextBoxServices;
 
@@ -15,10 +11,6 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface.GUI {
             StringPreparator = stringPreparator;
             TextBoxServices = textBoxServices;
         }
-
-        public string AutomationId => EditableElement.GetAutomationId();
-        public string ClassName => EditableElement.GetClassName();
-        public string Name => EditableElement.GetName();
 
         public string Text {
             get => EditableElement.Text;

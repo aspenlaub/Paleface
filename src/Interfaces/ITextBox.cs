@@ -1,13 +1,5 @@
-﻿using OpenQA.Selenium.Appium;
-
-namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Interfaces {
-    public interface ITextBox {
-        string AutomationId { get; }
-        string ClassName { get; }
-        string Name { get; }
-
-        // ReSharper disable once UnusedMemberInSuper.Global
-        AppiumWebElement EditableElement { get; set; }
+﻿namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Interfaces {
+    public interface ITextBox : IControlWithSingleEditableElement {
         void Clear();
         void CopyToClipboard();
         void PasteFromClipboard();

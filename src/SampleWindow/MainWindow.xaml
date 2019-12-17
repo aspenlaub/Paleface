@@ -9,6 +9,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="100" />
@@ -18,5 +19,10 @@
         <TextBox Grid.Row="0" Grid.Column="1" Margin="3" Name="SampleTextBox" AutomationProperties.Name="SampleTextBoxAutoName" AutomationProperties.AutomationId="SampleTextBoxAutoId" />
         <Label Grid.Row="1" Grid.Column="0" Margin="3">SampleComboBox</Label>
         <ComboBox Grid.Row="1" Grid.Column="1" Margin="3" Name="SampleComboBox" AutomationProperties.Name="SampleComboBoxAutoName" AutomationProperties.AutomationId="SampleComboBoxAutoId" IsEditable="True" />
+        <Button Grid.Row="2" Grid.Column="1" Margin="3" Name="SampleSayHelloWorldButton"
+                AutomationProperties.Name="SampleSayHelloWorldButtonAutoName" AutomationProperties.AutomationId="SampleSayHelloWorldButtonAutoId"
+                Click="SampleSayHelloWorldButton_OnClick">
+            Say Hello World In The Text Box
+        </Button>
     </Grid>
 </Window>

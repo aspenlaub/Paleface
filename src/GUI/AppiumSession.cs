@@ -86,5 +86,15 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface.GUI {
             comboBoxElement = Session.FindElementByAccessibilityId(accessibleName);
             return TextBoxServices.Create(comboBoxElement.FindElementByClassName(UiClassNames.TextBox));
         }
+
+        public IButton FindButton(string accessibleName) {
+            if (Session == null) {
+                throw new Exception($"Please call method {nameof(Initialize)}, first");
+            }
+
+            return new Button {
+                EditableElement = Session.FindElementByAccessibilityId(accessibleName)
+            };
+        }
     }
 }
