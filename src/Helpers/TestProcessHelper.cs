@@ -31,7 +31,10 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Helpers {
         }
 
         public static void ShutDownRunningProcesses(ProcessType processType) {
-            var processName = ProcessName(processType);
+            ShutDownRunningProcesses(ProcessName(processType));
+        }
+
+        public static void ShutDownRunningProcesses(string processName) {
             var processes = Process.GetProcessesByName(processName).ToList();
             if (!processes.Any()) {
                 return;
@@ -46,10 +49,32 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Helpers {
                 return;
             }
 
-            throw new Exception($"Could not close all {Enum.GetName(typeof(ProcessType), processType)} processes");
+            throw new Exception($"Could not close all {processName} processes");
         }
 
         public static void LaunchProcess(ProcessType processType) {
+            LaunchProcess(Executable(processType), ProcessName(processType));
+        }
+
+        public static void LaunchProcess(string executable, string processName) {
+            AppiumHelper.LaunchWinAppDriverIfNecessary();
+
+            var options = new AppiumOptions();
+            options.AddAdditionalCapability("app", executable);
+            options.AddAdditionalCapability("unicodeKeyboard", true);
+            options.AddAdditionalCapability("platform", "Windows");
+
+            try {
+                var _ = new WindowsDriver<WindowsElement>(new Uri("http://127.0.0.1:4723"), options);
+            } catch (WebDriverException) {
+            }
+            Thread.Sleep(TimeSpan.FromSeconds(5));
+            if (!IsProcessRunning(processName)) {
+                throw new Exception($"{processName} process could not be started");
+            }
+        }
+
+        private static string Executable(ProcessType processType) {
             string executable;
             switch (processType) {
                 case ProcessType.Calculator:
@@ -71,32 +96,21 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Helpers {
                                 throw new Exception($"{Enum.GetName(typeof(ProcessType), processType)} process could not be started");
                             }
                         }
-
                     }
+
                     break;
                 default:
-                    throw  new NotImplementedException();
+                    throw new NotImplementedException();
             }
 
-            AppiumHelper.LaunchWinAppDriverIfNecessary();
-
-            var options = new AppiumOptions();
-            options.AddAdditionalCapability("app", executable);
-            options.AddAdditionalCapability("unicodeKeyboard", true);
-            options.AddAdditionalCapability("platform", "Windows");
-
-            try {
-                var _ = new WindowsDriver<WindowsElement>(new Uri("http://127.0.0.1:4723"), options);
-            } catch (WebDriverException) {
-            }
-            Thread.Sleep(TimeSpan.FromSeconds(5));
-            if (!IsProcessRunning(processType)) {
-                throw new Exception($"{Enum.GetName(typeof(ProcessType), processType)} process could not be started");
-            }
+            return executable;
         }
 
         public static bool IsProcessRunning(ProcessType processType) {
-            var processName = ProcessName(processType);
+            return IsProcessRunning(ProcessName(processType));
+        }
+
+        public static bool IsProcessRunning(string processName) {
             return Process.GetProcessesByName(processName).Length == 1;
         }
     }
