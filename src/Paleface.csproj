@@ -51,7 +51,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Appium.WebDriver" Version="4.1.1" />
+    <PackageReference Include="Appium.WebDriver" Version="4.2.1" />
     <PackageReference Include="Autofac" Version="5.2.0" />
     <PackageReference Include="Pegh" Version="2.0.399.583" />
   </ItemGroup>
