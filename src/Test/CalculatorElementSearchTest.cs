@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Aspenlaub.Net.GitHub.CSharp.Paleface.Components;
 using Aspenlaub.Net.GitHub.CSharp.Paleface.Entities;
 using Aspenlaub.Net.GitHub.CSharp.Paleface.Extensions;
@@ -22,7 +23,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Test {
         public new void Initialize() {
             base.Initialize();
             TestProcessHelper.ShutDownRunningProcesses(TestProcessHelper.ProcessType.Calculator);
-            TestProcessHelper.LaunchProcess(TestProcessHelper.ProcessType.Calculator);
+            TestProcessHelper.LaunchProcessAsync(TestProcessHelper.ProcessType.Calculator).Wait();
         }
 
         [TestCleanup]
@@ -50,7 +51,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Test {
         }
 
         [TestMethod]
-        public void CannotFindShutDownCalculator() {
+        public async Task CannotFindShutDownCalculator() {
             TestProcessHelper.ShutDownRunningProcesses(TestProcessHelper.ProcessType.Calculator);
             var windowsElementSearchSpec = WindowsElementSearchSpec.Create(UiClassNames.ApplicationFrameWindow, "Calculator");
             var sut = vContainer.Resolve<IWindowsElementSearcher>();
@@ -60,7 +61,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Test {
             Assert.AreEqual(1, log.Count);
             element = sut.SearchWindowsElement(windowsElementSearchSpec);
             Assert.IsNull(element);
-            TestProcessHelper.LaunchProcess(TestProcessHelper.ProcessType.Calculator);
+            await TestProcessHelper.LaunchProcessAsync(TestProcessHelper.ProcessType.Calculator);
         }
 
         [TestMethod]

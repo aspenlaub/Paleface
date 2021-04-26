@@ -56,8 +56,8 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Appium.WebDriver" Version="4.3.1" />
-    <PackageReference Include="Autofac" Version="6.1.0" />
-    <PackageReference Include="Pegh" Version="2.0.637.895" />
+    <PackageReference Include="Autofac" Version="6.2.0" />
+    <PackageReference Include="Pegh" Version="2.0.641.609" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">

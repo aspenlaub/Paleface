@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using Aspenlaub.Net.GitHub.CSharp.Paleface.GUI;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Components;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Entities;
@@ -52,8 +53,8 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Helpers {
             throw new Exception($"Could not close all {processName} processes");
         }
 
-        public static void LaunchProcess(ProcessType processType) {
-            LaunchProcess(Executable(processType), ProcessName(processType));
+        public static async Task LaunchProcessAsync(ProcessType processType) {
+            LaunchProcess(await ExecutableAsync(processType), ProcessName(processType));
         }
 
         public static void LaunchProcess(string executable, string processName) {
@@ -74,7 +75,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Helpers {
             }
         }
 
-        private static string Executable(ProcessType processType) {
+        private static async Task<string> ExecutableAsync(ProcessType processType) {
             string executable;
             switch (processType) {
                 case ProcessType.Calculator:
@@ -89,7 +90,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Helpers {
                         var container = new ContainerBuilder().UsePegh(new DummyCsArgumentPrompter()).Build();
                         const string folderName = @"$(GitHub)\PalefaceBin\Release";
                         var errorsAndInfos = new ErrorsAndInfos();
-                        var folder = container.Resolve<IFolderResolver>().Resolve(folderName, errorsAndInfos);
+                        var folder = await container.Resolve<IFolderResolver>().ResolveAsync(folderName, errorsAndInfos);
                         if (!errorsAndInfos.AnyErrors()) {
                             executable = folder.FullName + @"\Aspenlaub.Net.GitHub.CSharp.Paleface.exe";
                             if (!File.Exists(executable)) {
