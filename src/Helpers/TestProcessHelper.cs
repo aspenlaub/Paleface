@@ -87,7 +87,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Helpers {
                 case ProcessType.Paleface:
                     executable = ClipboardHelperWindowExecutable;
                     if (!File.Exists(executable)) {
-                        var container = new ContainerBuilder().UsePegh(new DummyCsArgumentPrompter()).Build();
+                        var container = new ContainerBuilder().UsePegh("Paleface", new DummyCsArgumentPrompter()).Build();
                         const string folderName = @"$(GitHub)\PalefaceBin\Release";
                         var errorsAndInfos = new ErrorsAndInfos();
                         var folder = await container.Resolve<IFolderResolver>().ResolveAsync(folderName, errorsAndInfos);
