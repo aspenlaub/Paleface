@@ -26,9 +26,14 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Helpers {
             .Replace(".dll", @".exe");
 
         private static string ProcessName(ProcessType processType) {
-            return processType == ProcessType.Paleface
-                ? "Aspenlaub.Net.GitHub.CSharp.Paleface"
-                : Enum.GetName(typeof(ProcessType), processType)?.ToLower();
+            switch (processType) {
+                case ProcessType.Paleface:
+                    return "Aspenlaub.Net.GitHub.CSharp.Paleface";
+                case ProcessType.Calculator:
+                    return "CalculatorApp";
+                default:
+                    return Enum.GetName(typeof(ProcessType), processType)?.ToLower();
+            }
         }
 
         public static void ShutDownRunningProcesses(ProcessType processType) {
