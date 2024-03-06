@@ -23,9 +23,9 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
-    <PackageReference Include="MSTest.TestAdapter" Version="3.2.1" />
-    <PackageReference Include="MSTest.TestFramework" Version="3.2.1" />
-    <PackageReference Include="Pegh" Version="2.0.1666.1080" />
+    <PackageReference Include="MSTest.TestAdapter" Version="3.2.2" />
+    <PackageReference Include="MSTest.TestFramework" Version="3.2.2" />
+    <PackageReference Include="Pegh" Version="2.0.1687.429" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Paleface.csproj" />
