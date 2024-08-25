@@ -22,10 +22,10 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.10.0" />
-    <PackageReference Include="MSTest.TestAdapter" Version="3.5.1" />
-    <PackageReference Include="MSTest.TestFramework" Version="3.5.1" />
-    <PackageReference Include="Pegh" Version="2.0.1813.1186" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.0" />
+    <PackageReference Include="MSTest.TestAdapter" Version="3.5.2" />
+    <PackageReference Include="MSTest.TestFramework" Version="3.5.2" />
+    <PackageReference Include="Pegh" Version="2.0.1857.966" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Paleface.csproj" />
