@@ -12,7 +12,10 @@ namespace Aspenlaub.Net.GitHub.CSharp.Paleface.Helpers {
 
             var winAppDriverExecutable = Environment.GetEnvironmentVariable("ProgramFiles(x86)") + @"\Windows Application Driver\WinAppDriver.exe";
             if (!File.Exists(winAppDriverExecutable)) {
-                throw new Exception("WinAppDriver.exe process could not found. Remember that it must be installed from https://github.com/Microsoft/WinAppDriver/releases/");
+                winAppDriverExecutable = Environment.GetEnvironmentVariable("ProgramFiles") + @"\Windows Application Driver\WinAppDriver.exe";
+                if (!File.Exists(winAppDriverExecutable)) {
+                    throw new Exception("WinAppDriver.exe process could not found. Remember that it must be installed from https://github.com/Microsoft/WinAppDriver/releases/");
+                }
             }
 
             var process = new Process {
